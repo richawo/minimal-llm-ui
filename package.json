@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "langchain": "^0.0.167",
     "next": "13.5.5",
     "react": "^18",
     "react-dom": "^18"
