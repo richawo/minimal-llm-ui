@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "ai": "^2.2.16",
+    "clsx": "^2.0.0",
     "langchain": "^0.0.167",
     "next": "13.5.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "tailwind-merge": "^1.14.0"
   },
   "devDependencies": {
     "@types/node": "^20",
