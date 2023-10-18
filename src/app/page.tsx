@@ -1,38 +1,46 @@
 "use client";
-import { Ollama } from "langchain/llms/ollama";
+import { ChatOllama } from "langchain/chat_models/ollama";
 import { useState } from "react";
 
 export default function Home() {
+  const [newPrompt, setNewPrompt] = useState("");
   const [text, setText] = useState("");
-  const ollama = new Ollama({
+
+  const ollama = new ChatOllama({
     baseUrl: "http://localhost:11434",
     model: "zephyr",
   });
 
   async function triggerPrompt() {
-    const stream = await ollama.stream("who is oliver twist?");
-
-    for await (const chunk of stream) {
-      // process.stdout.write(chunk);
-      console.log(chunk);
-      setText((prev) => prev + chunk);
+      const stream = await ollama.stream(newPrompt);
+      setNewPrompt("");
+      for await (const chunk of stream) {
+        console.log(chunk);
+        setText((prev) => prev + chunk.content);
+      }
     }
-  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-16">
-      <div className="flex w-full flex-col items-center justify-center">
-        <button onClick={() => triggerPrompt()}>Click me</button>
-        <div className="h-full w-full flex-col"></div>
+      <div className="flex grow w-full h-full flex-col justify-end items-center">
+        {/* <button onClick={() => triggerPrompt()}>Click me</button> */}
+        <p className="mt-8 flex h-full grow text-sm text-white">{text}</p>
         <input
-          onChange={(e) => console.log(e.target.value)}
+        // on change, set the new prompt to the value of the input field but if they press enter, trigger the prompt
+          onChange={(e) => {setNewPrompt(e.target.value); (e as any).key === "Enter" && triggerPrompt()}}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              // Call your function here
+              triggerPrompt();
+            }
+          }}
+
           id="search"
-          className="lg:text-md block w-full appearance-none rounded-md border-0 bg-[#2D2C37]/20 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex xl:text-lg"
+          className="block w-full appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
           placeholder="Where to travel next year"
           type="text"
-          value=""
+          value={newPrompt}
         ></input>
-        <p className="mt-8 flex text-sm text-white">{text}</p>
       </div>
     </main>
   );
