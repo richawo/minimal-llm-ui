@@ -2,6 +2,7 @@
 import generateRandomString, { cn } from "@/lib/utils";
 import { ChatOllama } from "langchain/chat_models/ollama";
 import { AIMessage, HumanMessage } from "langchain/schema";
+import React from "react";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -26,16 +27,15 @@ export default function Home() {
       .then((data) => {
         console.log(data);
         setAvailableModels(data.models);
-        console.log(data.models[0]?.name)
+        console.log(data.models[0]?.name);
         setActiveModel(data.models[0]?.name);
         const initOllama = new ChatOllama({
           baseUrl: "http://localhost:11434",
           model: data.models[0]?.name,
-        });      
-        setOllama(initOllama)
+        });
+        setOllama(initOllama);
       });
   }, []);
-
 
   async function triggerPrompt() {
     if (!ollama) return;
@@ -45,6 +45,7 @@ export default function Home() {
       timestamp: Date.now(),
       content: newPrompt,
     };
+    const model = activeModel;
     let streamedText = "";
     messages.push(msg);
     const msgCache = [...messages];
@@ -63,6 +64,7 @@ export default function Home() {
         id: generateRandomString(8),
         timestamp: Date.now(),
         content: streamedText,
+        model,
       };
       const updatedMessages = [...msgCache, aiMsg];
       setMessages(() => updatedMessages);
@@ -70,7 +72,9 @@ export default function Home() {
   }
 
   function toggleModel() {
-    const i = (availableModels.findIndex(x => x.name == activeModel) + 1) % (availableModels.length - 1);
+    const i =
+      (availableModels.findIndex((x) => x.name == activeModel) + 1) %
+      (availableModels.length - 1);
     setActiveModel(availableModels[i].name);
   }
 
@@ -78,16 +82,25 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-16">
       <div className="flex h-full w-full grow flex-col items-center justify-end gap-y-4 whitespace-break-spaces">
         {messages.map((msg) => (
+          <div
+            key={"message-" + msg.id}
+            className={cn(
+              "flex flex-col items-center gap-y-1",
+              { "ml-auto": msg.type == "human" },
+              { "mr-auto": msg.type == "ai" },
+            )}
+          >
             <p
-              key={"message-" + msg.id}
-              className={cn(
-                "flex h-fit cursor-pointer rounded-md border border-[#191919] px-2 py-1 text-sm text-white",
-                { "ml-auto": msg.type == "human" },
-                { "mr-auto": msg.type == "ai" },
-              )}
+              className={
+                "flex h-fit cursor-pointer rounded-md border border-[#191919] px-2 py-1 text-sm text-white"
+              }
             >
               {msg.content}
             </p>
+            {msg?.model && (
+              <p className="mr-auto text-xs text-white/50">{msg.model}</p>
+            )}
+          </div>
         ))}
         <input
           onChange={(e) => {
@@ -108,7 +121,13 @@ export default function Home() {
           type="text"
           value={newPrompt}
         ></input>
-        <button className="text-xs text-white/50 cursor-pointer"  contentEditable={false} onClick={toggleModel}>{activeModel}</button>
+        <button
+          className="cursor-pointer text-xs text-white/50"
+          contentEditable={false}
+          onClick={toggleModel}
+        >
+          {activeModel}
+        </button>
       </div>
     </main>
   );
