@@ -25,7 +25,7 @@ export default function Home() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setAvailableModels(data);
+        setAvailableModels(data.models);
         console.log(data.models[0]?.name)
         setActiveModel(data.models[0]?.name);
         const initOllama = new ChatOllama({
@@ -69,6 +69,11 @@ export default function Home() {
     }
   }
 
+  function toggleModel() {
+    const i = (availableModels.findIndex(x => x.name == activeModel) + 1) % (availableModels.length - 1);
+    setActiveModel(availableModels[i].name);
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-16">
       <div className="flex h-full w-full grow flex-col items-center justify-end gap-y-4 whitespace-break-spaces">
@@ -103,7 +108,7 @@ export default function Home() {
           type="text"
           value={newPrompt}
         ></input>
-        <p className="text-xs text-white/50">{activeModel}</p>
+        <button className="text-xs text-white/50 cursor-pointer"  contentEditable={false} onClick={toggleModel}>{activeModel}</button>
       </div>
     </main>
   );
