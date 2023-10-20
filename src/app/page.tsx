@@ -85,21 +85,13 @@ export default function Home() {
           <div
             key={"message-" + msg.id}
             className={cn(
-              "flex flex-col items-center gap-y-1",
+              "flex h-fit cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1 max-w-[80%]",
               { "ml-auto": msg.type == "human" },
               { "mr-auto": msg.type == "ai" },
             )}
           >
-            <p
-              className={
-                "flex h-fit cursor-pointer rounded-md border border-[#191919] px-2 py-1 text-sm text-white"
-              }
-            >
-              {msg.content}
-            </p>
-            {msg?.model && (
-              <p className="mr-auto text-xs text-white/50">{msg.model}</p>
-            )}
+              <p className="mr-auto text-xs text-white/50">{(msg?.model?.split(":")[0] || 'user') + " • " + new Date(msg.timestamp).toLocaleDateString() + " " +  new Date(msg.timestamp).toLocaleTimeString() }</p>
+            <p className={"flex text-sm text-white"}>{msg.content.trim()}</p>
           </div>
         ))}
         <input
