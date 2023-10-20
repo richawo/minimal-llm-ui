@@ -2,8 +2,9 @@ import fs from "fs";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 
-export async function GET(request: NextRequest) {
-  const dirRelativeToPublicFolder = "../src/app";
+export async function POST(request: NextRequest) {
+
+  const dirRelativeToPublicFolder = (await request.json()).conversationPath;
 
   const dir = path.resolve("./public", dirRelativeToPublicFolder);
 
@@ -13,11 +14,7 @@ export async function GET(request: NextRequest) {
     path.join("/", dirRelativeToPublicFolder, name),
   );
 
-  // res.statusCode = 200;
-  // res.json(images);
   return new NextResponse(JSON.stringify({ answer: images}), {
     status: 200,
   });
 };
-
-// export default request;
