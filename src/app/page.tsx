@@ -1,11 +1,15 @@
 "use client";
-import generateRandomString, { cn } from "@/lib/utils";
+import generateRandomString from "@/utils/generateRandomString";
+import { cn } from "@/utils/cn";
 import { ChatOllama } from "langchain/chat_models/ollama";
 import { AIMessage, HumanMessage } from "langchain/schema";
 import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { RefreshIcon } from "@/components/icons/refresh-icon";
+import { CopyIcon } from "@/components/icons/copy-icon";
+import { TrashIcon } from "@/components/icons/trash-icon";
 
 export default function Home() {
   const [newPrompt, setNewPrompt] = useState("");
@@ -60,7 +64,9 @@ export default function Home() {
       body: JSON.stringify({
         conversationPath: "./conversations",
       }),
-    }).then((response) => response.json().then((data) => setConversations(data)));
+    }).then((response) =>
+      response.json().then((data) => setConversations(data)),
+    );
   }
 
   // async function getChatName() {}
@@ -114,27 +120,46 @@ export default function Home() {
           <div
             key={"message-" + msg.id}
             className={cn(
-              "flex h-fit max-w-[80%] cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1",
+              "flex h-fit max-w-[80%] cursor-pointer flex-col items-start gap-y-1 rounded-md px-2 py-1",
               { "ml-auto": msg.type == "human" },
               { "mr-auto": msg.type == "ai" },
             )}
           >
-            <p className="mr-auto text-xs text-white/50">
-              {(msg?.model?.split(":")[0] || "user") +
-                " • " +
-                new Date(msg.timestamp).toLocaleDateString() +
-                " " +
-                new Date(msg.timestamp).toLocaleTimeString()}
-            </p>
-            <Markdown
-              remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-              // components={{
-
-              // }}
-              className={"mr-auto flex flex-col text-sm text-white"}
+            <div
+              className={cn(
+                "flex h-fit w-full cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1",
+                { "ml-auto": msg.type == "human" },
+                { "mr-auto": msg.type == "ai" },
+              )}
             >
-              {msg.content.trim()}
-            </Markdown>
+              <p className="mr-auto text-xs text-white/50">
+                {(msg?.model?.split(":")[0] || "user") +
+                  " • " +
+                  new Date(msg.timestamp).toLocaleDateString() +
+                  " " +
+                  new Date(msg.timestamp).toLocaleTimeString()}
+              </p>
+              <Markdown
+                remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+                // components={{
+
+                // }}
+                className={"mr-auto flex flex-col text-sm text-white"}
+              >
+                {msg.content.trim()}
+              </Markdown>
+            </div>
+            <div
+              className={cn(
+                "my-2 flex gap-x-1",
+                { "ml-auto": msg.type == "human" },
+                { "mr-auto": msg.type == "ai" },
+              )}
+            >
+              <RefreshIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+              <CopyIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+              <TrashIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+            </div>
           </div>
         ))}
         <textarea
