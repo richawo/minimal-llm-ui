@@ -9,18 +9,16 @@ export async function POST(request: NextRequest) {
   const dir = path.resolve("./public", dirRelativeToPublicFolder);
 
   if (!fs.existsSync(dir)) {
-    return new NextResponse(JSON.stringify({ error: "Directory does not exist" }), {
-      status: 400,
-    });
+    fs.mkdirSync(dir);
   }
   
   const filenames = fs.readdirSync(dir);
 
-  const images = filenames.map((name) =>
-    path.join("/", dirRelativeToPublicFolder, name),
+  const files = filenames.map((name) =>
+    [name, path.join("/", dirRelativeToPublicFolder, name)],
   );
 
-  return new NextResponse(JSON.stringify({ answer: images}), {
+  return new NextResponse(JSON.stringify({ conversations: files}), {
     status: 200,
   });
 };

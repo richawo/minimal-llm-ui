@@ -21,6 +21,7 @@ export default function Home() {
   const [availableModels, setAvailableModels] = useState<any[]>([]);
   const [activeModel, setActiveModel] = useState<string>("");
   const [ollama, setOllama] = useState<ChatOllama>();
+  const [conversations, setConversations] = useState<any[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -33,8 +34,8 @@ export default function Home() {
     }
   }, [newPrompt]);
 
-  // Get models
   useEffect(() => {
+    // Get models
     fetch("http://localhost:11434/api/tags")
       .then((response) => response.json())
       .then((data) => {
@@ -48,9 +49,21 @@ export default function Home() {
         });
         setOllama(initOllama);
       });
+
+    // Get existing conversations
+    getExistingConvos();
   }, []);
 
-  async function getChatName() {}
+  async function getExistingConvos() {
+    fetch("../api/fs/get-convos", {
+      method: "POST", // or 'GET', 'PUT', etc.
+      body: JSON.stringify({
+        conversationPath: "./conversations",
+      }),
+    }).then((response) => response.json().then((data) => setConversations(data)));
+  }
+
+  // async function getChatName() {}
 
   async function triggerPrompt() {
     if (!ollama) return;
