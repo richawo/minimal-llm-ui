@@ -2,7 +2,7 @@
 import generateRandomString, { cn } from "@/lib/utils";
 import { ChatOllama } from "langchain/chat_models/ollama";
 import { AIMessage, HumanMessage } from "langchain/schema";
-import React from "react";
+import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -19,6 +19,17 @@ export default function Home() {
   const [availableModels, setAvailableModels] = useState<any[]>([]);
   const [activeModel, setActiveModel] = useState<string>("");
   const [ollama, setOllama] = useState<ChatOllama>();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = 'inherit';
+      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
+      textareaRef.current.style.overflow = `${
+        textareaRef?.current?.scrollHeight > 200 ? 'auto' : 'hidden'
+      }`;
+    }
+  }, [newPrompt]);
 
   // Get models
   useEffect(() => {
@@ -102,7 +113,8 @@ export default function Home() {
             </p>
           </div>
         ))}
-        <input
+        <textarea
+          ref={textareaRef}
           onChange={(e) => {
             setNewPrompt(e.target.value);
           }}
@@ -116,13 +128,13 @@ export default function Home() {
               console.log(e);
             }
           }}
-          className="block w-full appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
+          rows={1}
+          className="max-h-[200px] resize-none block w-full appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
           placeholder="Send a message"
-          type="text"
           value={newPrompt}
-        ></input>
+        ></textarea>
         <button
-          className="cursor-pointer text-xs text-white/50"
+          className="cursor-pointer text-xs text-white/50 hover:text-white/80 transition-colors"
           contentEditable={false}
           onClick={toggleModel}
         >
