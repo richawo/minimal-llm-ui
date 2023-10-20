@@ -50,6 +50,10 @@ export default function Home() {
       });
   }, []);
 
+  async function getChatName() {
+    
+  }
+
   async function triggerPrompt() {
     if (!ollama) return;
     const msg = {

@@ -8,6 +8,12 @@ export async function POST(request: NextRequest) {
 
   const dir = path.resolve("./public", dirRelativeToPublicFolder);
 
+  if (!fs.existsSync(dir)) {
+    return new NextResponse(JSON.stringify({ error: "Directory does not exist" }), {
+      status: 400,
+    });
+  }
+  
   const filenames = fs.readdirSync(dir);
 
   const images = filenames.map((name) =>

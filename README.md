@@ -34,6 +34,7 @@ To-do
 ---------------
 
 - Allow for saving conversations
+- Summarise conversations
 - Incorporate visualisations
 - Convert to desktop app so that it can be more powerful
 
