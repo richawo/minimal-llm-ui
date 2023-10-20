@@ -5,7 +5,7 @@ import { AIMessage, HumanMessage } from "langchain/schema";
 import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
-import remarkGfm from 'remark-gfm'
+import remarkGfm from "remark-gfm";
 
 export default function Home() {
   const [newPrompt, setNewPrompt] = useState("");
@@ -50,9 +50,7 @@ export default function Home() {
       });
   }, []);
 
-  async function getChatName() {
-    
-  }
+  async function getChatName() {}
 
   async function triggerPrompt() {
     if (!ollama) return;
@@ -116,11 +114,12 @@ export default function Home() {
                 new Date(msg.timestamp).toLocaleTimeString()}
             </p>
             <Markdown
-            remarkPlugins={[[remarkGfm, {singleTilde: false}]]}
-            // components={{
+              remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+              // components={{
 
-            // }}
-            className={"mr-auto flex flex-col text-sm text-white"}>
+              // }}
+              className={"mr-auto flex flex-col text-sm text-white"}
+            >
               {msg.content.trim()}
             </Markdown>
           </div>
