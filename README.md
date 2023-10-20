@@ -4,6 +4,8 @@ Title: Chat with Local Language Models (LLMs) Front-end Tool
 Introduction
 ------------
 
+https://github.com/richawo/minimal-llm-ui/assets/35015261/404d432b-dd8c-44f5-9754-1be78323ab0d
+
 This minimalistic UI is designed to act as a simple interface for Ollama models, allowing you to chat with your models and toggle between different ones easily. The tool is built using React, Next.js, and Tailwind CSS, with LangchainJs and Ollama providing the magic behind the scenes.
 
 Features
