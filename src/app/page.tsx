@@ -4,7 +4,7 @@ import { ChatOllama } from "langchain/chat_models/ollama";
 import { AIMessage, HumanMessage } from "langchain/schema";
 import React, { useRef } from "react";
 import { useEffect, useState } from "react";
-
+import Markdown from "react-markdown";
 export default function Home() {
   const [newPrompt, setNewPrompt] = useState("");
   const [messages, setMessages] = useState<
@@ -85,7 +85,7 @@ export default function Home() {
   function toggleModel() {
     const i =
       (availableModels.findIndex((x) => x.name == activeModel) + 1) %
-      (availableModels.length);
+      availableModels.length;
     console.log(i, activeModel, availableModels);
     setActiveModel(availableModels[i].name);
   }
@@ -109,9 +109,9 @@ export default function Home() {
                 " " +
                 new Date(msg.timestamp).toLocaleTimeString()}
             </p>
-            <p className={"mr-auto flex text-sm text-white"}>
+            <Markdown className={"mr-auto flex flex-col text-sm text-white"}>
               {msg.content.trim()}
-            </p>
+            </Markdown>
           </div>
         ))}
         <textarea
