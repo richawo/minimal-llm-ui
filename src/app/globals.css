@@ -47,3 +47,8 @@ table {
   border-radius: 8px;
   background: rgba(255,255,255,0.05);
 }
+
+a[href] {
+  color: #70b1ff;
+  font-weight: 500;
+}
