@@ -28,6 +28,13 @@ Getting Started
 3. Install the dependencies `npm install` in your terminal.
 4. Start the tool by running `npm run dev` (it should be available in your web browser at `http://localhost:3000`)
 
+To-do
+---------------
+
+- Allow for saving conversations
+- Incorporate visualisations
+- Convert to desktop app so that it can be more powerful
+
 Troubleshooting
 ---------------
 
