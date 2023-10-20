@@ -23,10 +23,10 @@ export default function Home() {
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = 'inherit';
+      textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
       textareaRef.current.style.overflow = `${
-        textareaRef?.current?.scrollHeight > 200 ? 'auto' : 'hidden'
+        textareaRef?.current?.scrollHeight > 200 ? "auto" : "hidden"
       }`;
     }
   }, [newPrompt]);
@@ -85,7 +85,8 @@ export default function Home() {
   function toggleModel() {
     const i =
       (availableModels.findIndex((x) => x.name == activeModel) + 1) %
-      (availableModels.length - 1);
+      (availableModels.length);
+    console.log(i, activeModel, availableModels);
     setActiveModel(availableModels[i].name);
   }
 
@@ -129,12 +130,12 @@ export default function Home() {
             }
           }}
           rows={1}
-          className="max-h-[200px] resize-none block w-full appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
+          className="block max-h-[200px] w-full resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
           placeholder="Send a message"
           value={newPrompt}
         ></textarea>
         <button
-          className="cursor-pointer text-xs text-white/50 hover:text-white/80 transition-colors"
+          className="cursor-pointer text-xs text-white/50 transition-colors hover:text-white/80"
           contentEditable={false}
           onClick={toggleModel}
         >
