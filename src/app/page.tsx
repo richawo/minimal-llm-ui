@@ -5,6 +5,8 @@ import { AIMessage, HumanMessage } from "langchain/schema";
 import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
+import remarkGfm from 'remark-gfm'
+
 export default function Home() {
   const [newPrompt, setNewPrompt] = useState("");
   const [messages, setMessages] = useState<
@@ -109,7 +111,12 @@ export default function Home() {
                 " " +
                 new Date(msg.timestamp).toLocaleTimeString()}
             </p>
-            <Markdown className={"mr-auto flex flex-col text-sm text-white"}>
+            <Markdown
+            remarkPlugins={[[remarkGfm, {singleTilde: false}]]}
+            // components={{
+
+            // }}
+            className={"mr-auto flex flex-col text-sm text-white"}>
               {msg.content.trim()}
             </Markdown>
           </div>

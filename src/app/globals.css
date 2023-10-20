@@ -39,3 +39,11 @@ pre {
   margin: 1em 0em;
   padding: 1em
 }
+
+table {
+  margin: 1em 0;
+  text-align: left;
+  border: rgba(255,255,255,0.05) solid;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+}
