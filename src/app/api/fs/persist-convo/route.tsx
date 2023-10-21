@@ -3,7 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 
 export async function POST(request: NextRequest) {
-  const dirRelativeToPublicFolder = (await request.json()).conversationPath;
+  const req = await request.json();
+  const dirRelativeToPublicFolder = req.conversationPath;
+  const messages = req.messages;
+  const filename = req.filename;
+  const convoTitle = req.convoTitle;
 
   const dir = path.resolve("./public", dirRelativeToPublicFolder);
 
@@ -13,8 +17,8 @@ export async function POST(request: NextRequest) {
   }
 
   // Save file in JSON format
-  const jsonData = JSON.stringify({ name: "My File", content: "Hello World!" });
-  fs.writeFileSync(path.join(dir, "myfile.json"), jsonData);
+  const jsonData = JSON.stringify({title: convoTitle, messages: messages});
+  fs.writeFileSync(path.join(dir, filename), jsonData);
 
   return new NextResponse(
     JSON.stringify({ message: "File saved successfully" }),

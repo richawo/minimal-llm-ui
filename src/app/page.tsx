@@ -93,6 +93,7 @@ export default function Home() {
       ),
     );
     setNewPrompt("");
+    let updatedMessages = [...msgCache];
     for await (const chunk of stream) {
       streamedText += chunk.content;
       const aiMsg = {
@@ -102,19 +103,39 @@ export default function Home() {
         content: streamedText,
         model,
       };
-      const updatedMessages = [...msgCache, aiMsg];
+      updatedMessages = [...msgCache, aiMsg];
       setMessages(() => updatedMessages);
     }
+
+    persistConvo(updatedMessages);
+  }
+  
+  async function persistConvo(messages: any[]) {
+    let name = activeConversation
+    if (name == "") {
+      name = (await getName(newPrompt)).trim();
+      console.log(name.trim());
+      setActiveConversation(name.trim());
+    }
+
+    fetch("../api/fs/persist-convo", {
+      method: "POST", // or 'GET', 'PUT', etc.
+      body: JSON.stringify({
+        conversationPath: "./conversations",
+        messages: messages,
+        convoTitle : name.trim,
+        filename: name.toLowerCase().replaceAll(" ", "_").replaceAll(":", "-").replaceAll('"', '') + ".json",
+      }),
+    });
   }
 
   function getName(input: string) {
     // TODO: fix the model used to get this name
-    ollama
-      ?.predict(
-        "You're a tool, that receives an input and responds with a 2-5 word summary of the topic underlying that input. Each word in the summary should be carefully chosen so that it's perfecly informative - and serve as a perfect title for the conversation that follows. Now, return the summary for the following input:\n" +
+   return ollama!.predict(
+        "You're a tool, that receives an input and responds with a 2-5 word summary of the topic based specifically on the words used in the input (not the expected output). Each word in the summary should be carefully chosen so that it's perfecly informative - and serve as a perfect title for the input. Now, return the summary for the following input:\n" +
           input,
       )
-      .then((name) => console.log(name));
+      .then((name) => name);
   }
 
   function toggleModel() {
