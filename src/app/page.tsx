@@ -126,7 +126,7 @@ export default function Home() {
         convoTitle : name.trim,
         filename: name.toLowerCase().replaceAll(" ", "_").replaceAll(":", "-").replaceAll('"', '') + ".json",
       }),
-    });
+    }).then(() => getExistingConvos());
   }
 
   function getName(input: string) {
