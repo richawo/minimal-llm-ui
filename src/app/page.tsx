@@ -137,10 +137,14 @@ export default function Home() {
   }
 
   function getName(input: string) {
-    // TODO: fix the model used to get this name
-    return ollama!
+    const nameOllama = new ChatOllama({
+      baseUrl: "http://localhost:11434",
+      model: "llama2",
+      verbose: false,
+    });
+    return nameOllama!
       .predict(
-        "You're a tool, that receives an input and responds with a 2-5 word summary of the topic based specifically on the words used in the input (not the expected output). Each word in the summary should be carefully chosen so that it's perfecly informative - and serve as a perfect title for the input. Now, return the summary for the following input:\n" +
+        "You're a tool, that receives an input and responds exclusively with a 2-5 word summary of the topic (and absolutely no prose) based specifically on the words used in the input (not the expected output). Each word in the summary should be carefully chosen so that it's perfecly informative - and serve as a perfect title for the input. Now, return the summary for the following input:\n" +
           input,
       )
       .then((name) => name);
@@ -156,7 +160,7 @@ export default function Home() {
         setActiveModel={setActiveModel}
         setOllama={setOllama}
       />
-      <div className="flex w-full flex-1 flex-col flex-shrink items-center justify-end gap-y-4 overflow-hidden whitespace-break-spaces">
+      <div className="flex w-full flex-1 flex-shrink flex-col items-center justify-end gap-y-4 overflow-hidden whitespace-break-spaces">
         <div className="flex w-full flex-1 flex-col items-center justify-end gap-y-4 overflow-scroll whitespace-break-spaces">
           <div className="block h-fit w-full flex-col items-center justify-center gap-y-1 overflow-scroll rounded-md p-2">
             {messages.map((msg) => (
@@ -205,7 +209,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="flex max-h-[200px] flex-shrink-0 overflow-hidden w-full resize-none appearance-none rounded-md px-4 mb-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex min-h-[56px]">
+      <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md px-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
         <textarea
           ref={textareaRef}
           onChange={(e) => {
