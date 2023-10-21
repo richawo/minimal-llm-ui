@@ -26,6 +26,7 @@ export default function Home() {
   const [activeModel, setActiveModel] = useState<string>("");
   const [ollama, setOllama] = useState<ChatOllama>();
   const [conversations, setConversations] = useState<any[]>([]);
+  const [activeConversation, setActiveConversation] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -73,6 +74,7 @@ export default function Home() {
 
   async function triggerPrompt() {
     if (!ollama) return;
+    if (messages.length == 0) getName(newPrompt);
     const msg = {
       type: "human",
       id: generateRandomString(8),
@@ -103,6 +105,16 @@ export default function Home() {
       const updatedMessages = [...msgCache, aiMsg];
       setMessages(() => updatedMessages);
     }
+  }
+
+  function getName(input: string) {
+    // TODO: fix the model used to get this name
+    ollama
+      ?.predict(
+        "You're a tool, that receives an input and responds with a 2-5 word summary of the topic underlying that input. Each word in the summary should be carefully chosen so that it's perfecly informative - and serve as a perfect title for the conversation that follows. Now, return the summary for the following input:\n" +
+          input,
+      )
+      .then((name) => console.log(name));
   }
 
   function toggleModel() {
