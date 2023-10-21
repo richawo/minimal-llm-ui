@@ -52,3 +52,7 @@ a[href] {
   color: #70b1ff;
   font-weight: 500;
 }
+
+th, td {
+  padding: 4px, 8px;
+}
