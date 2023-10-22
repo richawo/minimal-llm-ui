@@ -211,7 +211,7 @@ export default function Home() {
   }
 
   return (
-    <main className="relative flex max-h-screen min-h-screen items-center justify-between overflow-hidden">
+    <main className="relative flex max-h-screen min-h-screen items-center justify-between overflow-hidden w-screen max-w-[100vw]">
       <motion.div
         className={cn("absolute left-0 top-0 z-50 p-3")}
         initial={false}
@@ -258,7 +258,7 @@ export default function Home() {
             </div>
           ))}
       </motion.div>
-      <div className="flex max-h-screen min-h-screen w-full flex-col">
+      <div className="flex max-h-screen min-h-screen w-full flex-col" style={{ maxWidth: "calc(100vw - " + (menuState ? 20 : 0) + "rem)" }}>
         <AppNavbar
           documentName={activeConversation}
           setDocumentName={() => {}}
@@ -284,7 +284,7 @@ export default function Home() {
                 >
                   <div
                     className={cn(
-                      "flex h-fit cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1 w-full",
+                      "flex h-fit cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1 max-w-full",
                       { "ml-auto": msg.type == "human" },
                       { "mr-auto": msg.type == "ai" },
                     )}
