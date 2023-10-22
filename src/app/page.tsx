@@ -139,6 +139,21 @@ export default function Home() {
     }).then(() => getExistingConvos());
   }
 
+  function loadConvo(conversation: { title: string; filePath: string }) {
+    if (activeConversation == conversation.title) return;
+    fetch("../api/fs/get-convo-by-path", {
+      method: "POST",
+      body: JSON.stringify({
+        conversationPath: conversation.filePath,
+      }),
+    }).then((response) =>
+      response.json().then((data) => {
+        setMessages(data.messages);
+        setActiveConversation(conversation.title);
+      }),
+    );
+  }
+
   function getName(input: string) {
     const nameOllama = new ChatOllama({
       baseUrl: "http://localhost:11434",
@@ -156,7 +171,7 @@ export default function Home() {
   return (
     <main className="relative flex max-h-screen min-h-screen items-center justify-between overflow-hidden">
       <motion.div
-        className={cn("absolute top-0 left-0 z-50 p-3")}
+        className={cn("absolute left-0 top-0 z-50 p-3")}
         initial={false}
         animate={menuState ? "open" : "closed"}
       >
@@ -175,7 +190,7 @@ export default function Home() {
             <div
               className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-white/5"
               key={c.title}
-              onClick={() => setActiveConversation(c.title)}
+              onClick={() => loadConvo(c)}
             >
               <div className="flex items-center gap-2">
                 <span className="text-xs">{c.title}</span>
