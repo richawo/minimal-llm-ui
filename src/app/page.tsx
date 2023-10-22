@@ -154,6 +154,22 @@ export default function Home() {
     );
   }
 
+  function deleteConvo(conversation: { title: string; filePath: string }) {
+    fetch("../api/fs/delete-convo-by-path", {
+      method: "POST",
+      body: JSON.stringify({
+        conversationPath: conversation.filePath,
+      }),
+    }).then((response) => {
+      setConversations((prev) => [
+        ...conversations.filter((c) => c.filePath !== conversation.filePath),
+      ]);
+      if (activeConversation == conversation.title) {
+        loadConvo(conversations[0]);
+      }
+    });
+  }
+
   function getName(input: string) {
     const nameOllama = new ChatOllama({
       baseUrl: "http://localhost:11434",
@@ -197,7 +213,10 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-2">
                 <CopyIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
-                <TrashIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+                <TrashIcon
+                  onClick={() => deleteConvo(c)}
+                  className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                />
               </div>
             </div>
           ))}

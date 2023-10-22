@@ -1,10 +1,12 @@
 type Props = {
   className?: string;
+  onClick: () => void;
 };
 
-export const TrashIcon = ({ className }: Props) => {
+export const TrashIcon = ({ className, onClick }: Props) => {
   return (
     <svg
+      onClick={onClick}
       className={className}
       width="77"
       height="77"
