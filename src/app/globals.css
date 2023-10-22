@@ -33,10 +33,18 @@ body {
   margin: 2px;
 }
 
+pre > code {
+  width: 100%;
+  display: flex;
+  overflow-x: scroll;
+  max-width: 100%;
+}
+
 pre {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
   margin: 1em 0em;
+  max-width: 100%;
   padding: 1em
 }
 

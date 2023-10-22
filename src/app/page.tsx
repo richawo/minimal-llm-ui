@@ -48,7 +48,7 @@ export default function Home() {
   }, [newPrompt]);
 
   useEffect(() => {
-    scrollToBottom()
+    scrollToBottom();
   }, [activeConversation]);
 
   useEffect(() => {
@@ -117,7 +117,7 @@ export default function Home() {
       };
       updatedMessages = [...msgCache, aiMsg];
       setMessages(() => updatedMessages);
-      c++
+      c++;
       if (c % 8 == 0) scrollToBottom();
     }
 
@@ -223,7 +223,7 @@ export default function Home() {
         layout
         className={cn(
           "flex max-h-screen min-h-screen flex-col overflow-x-visible border-r py-12",
-          { "w-80 border-white/10": menuState },
+          { "w-80 min-w-[20rem] border-white/10": menuState },
           { "-z-0 w-0 border-white/0": !menuState },
         )}
       >
@@ -284,7 +284,7 @@ export default function Home() {
                 >
                   <div
                     className={cn(
-                      "flex h-fit cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1",
+                      "flex h-fit cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1 w-full",
                       { "ml-auto": msg.type == "human" },
                       { "mr-auto": msg.type == "ai" },
                     )}
@@ -298,7 +298,9 @@ export default function Home() {
                     </p>
                     <Markdown
                       remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-                      className={"mr-auto flex flex-col text-sm text-white"}
+                      className={
+                        "mr-auto flex w-full flex-col text-sm text-white"
+                      }
                     >
                       {msg.content.trim()}
                     </Markdown>
