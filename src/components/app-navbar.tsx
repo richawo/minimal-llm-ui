@@ -87,44 +87,19 @@ export default function AppNavbar({
         <div className="mx-auto flex flex-wrap items-center justify-between px-20 py-2.5">
           <div className="flex space-x-8">
             <input
-              className="ring-none -mx-2 -my-1 flex cursor-text items-center gap-x-2 rounded-xl border-transparent bg-transparent px-2 py-1 text-xs font-medium text-white outline-none placeholder:text-white/80 hover:bg-white/10 "
+              className="w-64 ring-none flex cursor-text items-center gap-x-2 rounded-md border-transparent bg-transparent px-2 py-1 text-xs font-medium text-white outline-none placeholder:text-white/80 hover:bg-white/10 "
               placeholder="Untitled"
               value={documentName}
               onChange={handleInputChange}
             ></input>
           </div>
           <button
-            className="cursor-pointer text-xs text-white/50 transition-colors hover:text-white/80"
+            className="cursor-pointer text-xs text-white transition-colors hover:bg-white/10 rounded-md px-2 py-1"
             contentEditable={false}
             onClick={toggleModel}
           >
             {activeModel}
           </button>
-          <div className="flex md:order-2 md:hidden">
-            <button
-              data-collapse-toggle="navbar-sticky"
-              type="button"
-              onClick={toggleMenu}
-              className="inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden"
-              aria-controls="navbar-sticky"
-              aria-expanded={isMenuOpen}
-            >
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className="h-6 w-6"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </button>
-          </div>
         </div>
       </nav>
     </>

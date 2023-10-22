@@ -11,6 +11,8 @@ import { RefreshIcon } from "@/components/icons/refresh-icon";
 import { CopyIcon } from "@/components/icons/copy-icon";
 import { TrashIcon } from "@/components/icons/trash-icon";
 import AppNavbar from "@/components/app-navbar";
+import { MenuToggle } from "@/components/menu-toggle";
+import { motion, useCycle } from "framer-motion";
 
 export default function Home() {
   const [newPrompt, setNewPrompt] = useState("");
@@ -26,8 +28,11 @@ export default function Home() {
   const [availableModels, setAvailableModels] = useState<any[]>([]);
   const [activeModel, setActiveModel] = useState<string>("");
   const [ollama, setOllama] = useState<ChatOllama>();
-  const [conversations, setConversations] = useState<any[]>([]);
+  const [conversations, setConversations] = useState<
+    { title: string; filePath: string }[]
+  >([]);
   const [activeConversation, setActiveConversation] = useState<string>("");
+  const [menuState, toggleMenuState] = useCycle(false, true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -71,8 +76,6 @@ export default function Home() {
       response.json().then((data) => setConversations(data)),
     );
   }
-
-  // async function getChatName() {}
 
   async function triggerPrompt() {
     if (!ollama) return;
@@ -151,91 +154,125 @@ export default function Home() {
   }
 
   return (
-    <main className="flex max-h-screen min-h-screen flex-col items-center justify-between overflow-hidden">
-      <AppNavbar
-        documentName={activeConversation}
-        setDocumentName={() => {}}
-        activeModel={activeModel}
-        availableModels={availableModels}
-        setActiveModel={setActiveModel}
-        setOllama={setOllama}
-      />
-      <div className="flex w-full flex-1 flex-shrink flex-col items-center justify-end gap-y-4 overflow-hidden whitespace-break-spaces">
-        <div className="flex w-full flex-1 flex-col items-center justify-end gap-y-4 overflow-scroll whitespace-break-spaces">
-          <div className="block h-fit w-full flex-col items-center justify-center gap-y-1 overflow-scroll rounded-md p-2">
-            {messages.map((msg) => (
-              <div
-                key={"message-" + msg.id}
-                className={cn(
-                  "flex h-fit max-w-[80%] cursor-pointer flex-col items-start gap-y-1 rounded-md px-2 py-1",
-                  { "ml-auto": msg.type == "human" },
-                  { "mr-auto": msg.type == "ai" },
-                )}
-              >
-                <div
-                  className={cn(
-                    "flex h-fit w-full cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1",
-                    { "ml-auto": msg.type == "human" },
-                    { "mr-auto": msg.type == "ai" },
-                  )}
-                >
-                  <p className="mr-auto text-xs text-white/50">
-                    {(msg?.model?.split(":")[0] || "user") +
-                      " • " +
-                      new Date(msg.timestamp).toLocaleDateString() +
-                      " " +
-                      new Date(msg.timestamp).toLocaleTimeString()}
-                  </p>
-                  <Markdown
-                    remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
-                    className={"mr-auto flex flex-col text-sm text-white"}
-                  >
-                    {msg.content.trim()}
-                  </Markdown>
-                </div>
-                <div
-                  className={cn(
-                    "my-2 flex gap-x-1",
-                    { "ml-auto": msg.type == "human" },
-                    { "mr-auto": msg.type == "ai" },
-                  )}
-                >
-                  <RefreshIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
-                  <CopyIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
-                  <TrashIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
-                </div>
+    <main className="relative flex max-h-screen min-h-screen items-center justify-between overflow-hidden">
+      <motion.div
+        className={cn("absolute top-0 left-0 z-50 p-3")}
+        initial={false}
+        animate={menuState ? "open" : "closed"}
+      >
+        <MenuToggle toggle={() => toggleMenuState()} />
+      </motion.div>
+      <motion.div
+        layout
+        className={cn(
+          "flex max-h-screen min-h-screen flex-col overflow-x-visible border-r py-12",
+          { "w-80 border-white/10": menuState },
+          { "-z-0 w-0 border-white/0": !menuState },
+        )}
+      >
+        {menuState &&
+          conversations.map((c) => (
+            <div
+              className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-white/5"
+              key={c.title}
+              onClick={() => setActiveConversation(c.title)}
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xs">{c.title}</span>
               </div>
-            ))}
+              <div className="flex items-center gap-2">
+                <CopyIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+                <TrashIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+              </div>
+            </div>
+          ))}
+      </motion.div>
+      <div className="flex max-h-screen min-h-screen w-full flex-col">
+        <AppNavbar
+          documentName={activeConversation}
+          setDocumentName={() => {}}
+          activeModel={activeModel}
+          availableModels={availableModels}
+          setActiveModel={setActiveModel}
+          setOllama={setOllama}
+        />
+        <div className="flex w-full flex-1 flex-shrink flex-col items-center justify-end gap-y-4 overflow-hidden whitespace-break-spaces">
+          <div className="flex w-full flex-1 flex-col items-center justify-end gap-y-4 overflow-scroll whitespace-break-spaces">
+            <div className="block h-fit w-full flex-col items-center justify-center gap-y-1 overflow-scroll rounded-md p-2">
+              {messages.map((msg) => (
+                <div
+                  key={"message-" + msg.id}
+                  className={cn(
+                    "flex h-fit max-w-[80%] cursor-pointer flex-col items-start gap-y-1 rounded-md px-2 py-1",
+                    { "ml-auto": msg.type == "human" },
+                    { "mr-auto": msg.type == "ai" },
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "flex h-fit w-full cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1",
+                      { "ml-auto": msg.type == "human" },
+                      { "mr-auto": msg.type == "ai" },
+                    )}
+                  >
+                    <p className="mr-auto text-xs text-white/50">
+                      {(msg?.model?.split(":")[0] || "user") +
+                        " • " +
+                        new Date(msg.timestamp).toLocaleDateString() +
+                        " " +
+                        new Date(msg.timestamp).toLocaleTimeString()}
+                    </p>
+                    <Markdown
+                      remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
+                      className={"mr-auto flex flex-col text-sm text-white"}
+                    >
+                      {msg.content.trim()}
+                    </Markdown>
+                  </div>
+                  <div
+                    className={cn(
+                      "my-2 flex gap-x-1",
+                      { "ml-auto": msg.type == "human" },
+                      { "mr-auto": msg.type == "ai" },
+                    )}
+                  >
+                    <RefreshIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+                    <CopyIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+                    <TrashIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md px-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
-        <textarea
-          ref={textareaRef}
-          onChange={(e) => {
-            if (e.target.value != "\n") setNewPrompt(e.target.value);
-          }}
-          onKeyDown={(e) => {
-            if (
-              e.key === "Enter" &&
-              !e.metaKey &&
-              !e.shiftKey &&
-              !e.altKey &&
-              newPrompt !== ""
-            ) {
-              triggerPrompt();
-            } else if (
-              e.key === "Enter" &&
-              (e.metaKey || !e.shiftKey || !e.altKey)
-            ) {
-              console.log(e);
-            }
-          }}
-          rows={1}
-          className="flex max-h-[200px] w-full resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
-          placeholder="Send a message"
-          value={newPrompt}
-        ></textarea>
+        <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md px-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
+          <textarea
+            ref={textareaRef}
+            onChange={(e) => {
+              if (e.target.value != "\n") setNewPrompt(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (
+                e.key === "Enter" &&
+                !e.metaKey &&
+                !e.shiftKey &&
+                !e.altKey &&
+                newPrompt !== ""
+              ) {
+                triggerPrompt();
+              } else if (
+                e.key === "Enter" &&
+                (e.metaKey || !e.shiftKey || !e.altKey)
+              ) {
+                console.log(e);
+              }
+            }}
+            rows={1}
+            className="flex max-h-[200px] w-full resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
+            placeholder="Send a message"
+            value={newPrompt}
+          ></textarea>
+        </div>
       </div>
     </main>
   );
