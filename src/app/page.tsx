@@ -225,7 +225,7 @@ export default function Home() {
                 >
                   <div
                     className={cn(
-                      "flex h-fit w-full cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1",
+                      "flex h-fit cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1",
                       { "ml-auto": msg.type == "human" },
                       { "mr-auto": msg.type == "ai" },
                     )}
