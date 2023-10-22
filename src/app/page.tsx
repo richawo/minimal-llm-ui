@@ -35,17 +35,21 @@ export default function Home() {
   const [activeConversation, setActiveConversation] = useState<string>("");
   const [menuState, toggleMenuState] = useCycle(false, true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const msgContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
-      // textareaRef.current.style.minHeight = `${textareaRef.current?.scrollHeight}px`;
       textareaRef.current.style.overflow = `${
         textareaRef?.current?.scrollHeight > 200 ? "auto" : "hidden"
       }`;
     }
   }, [newPrompt]);
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [activeConversation]);
 
   useEffect(() => {
     // Get models
@@ -80,6 +84,7 @@ export default function Home() {
 
   async function triggerPrompt() {
     if (!ollama) return;
+    scrollToBottom();
     if (messages.length == 0) getName(newPrompt);
     const msg = {
       type: "human",
@@ -100,6 +105,7 @@ export default function Home() {
     );
     setNewPrompt("");
     let updatedMessages = [...msgCache];
+    let c = 0;
     for await (const chunk of stream) {
       streamedText += chunk.content;
       const aiMsg = {
@@ -111,8 +117,11 @@ export default function Home() {
       };
       updatedMessages = [...msgCache, aiMsg];
       setMessages(() => updatedMessages);
+      c++
+      if (c % 8 == 0) scrollToBottom();
     }
 
+    scrollToBottom();
     persistConvo(updatedMessages);
   }
 
@@ -171,6 +180,22 @@ export default function Home() {
     });
   }
 
+  const scrollToBottom = () => {
+    if (msgContainerRef.current) {
+      msgContainerRef.current.scrollTo({
+        top: msgContainerRef.current.scrollHeight + 10000,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  function startNewChat() {
+    setMessages([]);
+    setActiveConversation("");
+    setNewPrompt("");
+    toggleMenuState();
+  }
+
   function getName(input: string) {
     const nameOllama = new ChatOllama({
       baseUrl: "http://localhost:11434",
@@ -203,10 +228,15 @@ export default function Home() {
         )}
       >
         {menuState && (
-          <div className="flex cursor-pointer items-center justify-between bg-white/80 px-4 py-2 text-black transition-colors hover:bg-white">
+          <motion.button
+            onClick={startNewChat}
+            whileTap={{ backgroundColor: "rgba(255,255,255,0.8)" }}
+            whileHover={{ backgroundColor: "rgba(255,255,255,1)" }}
+            className="flex cursor-pointer items-center justify-between bg-white/80 px-4 py-2 text-black"
+          >
             <span className="text-xs font-semibold">New Chat</span>
             <RightChevron className="h-4 w-4 fill-black" />
-          </div>
+          </motion.button>
         )}
         {menuState &&
           conversations.map((c) => (
@@ -239,7 +269,10 @@ export default function Home() {
         />
         <div className="flex w-full flex-1 flex-shrink flex-col items-center justify-end gap-y-4 overflow-hidden whitespace-break-spaces">
           <div className="flex w-full flex-1 flex-col items-center justify-end gap-y-4 overflow-scroll whitespace-break-spaces">
-            <div className="block h-fit w-full flex-col items-center justify-center gap-y-1 overflow-scroll rounded-md p-2">
+            <div
+              ref={msgContainerRef}
+              className="block h-fit w-full flex-col items-center justify-center gap-y-1 overflow-scroll rounded-md p-2"
+            >
               {messages.map((msg) => (
                 <div
                   key={"message-" + msg.id}
