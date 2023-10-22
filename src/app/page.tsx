@@ -13,6 +13,7 @@ import { TrashIcon } from "@/components/icons/trash-icon";
 import AppNavbar from "@/components/app-navbar";
 import { MenuToggle } from "@/components/menu-toggle";
 import { motion, useCycle } from "framer-motion";
+import { RightChevron } from "@/components/icons/right-chevron";
 
 export default function Home() {
   const [newPrompt, setNewPrompt] = useState("");
@@ -201,6 +202,12 @@ export default function Home() {
           { "-z-0 w-0 border-white/0": !menuState },
         )}
       >
+        {menuState && (
+          <div className="flex cursor-pointer items-center justify-between bg-white/80 px-4 py-2 text-black transition-colors hover:bg-white">
+            <span className="text-xs font-semibold">New Chat</span>
+            <RightChevron className="h-4 w-4 fill-black" />
+          </div>
+        )}
         {menuState &&
           conversations.map((c) => (
             <div

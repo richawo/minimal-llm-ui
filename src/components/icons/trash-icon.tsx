@@ -1,6 +1,6 @@
 type Props = {
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 export const TrashIcon = ({ className, onClick }: Props) => {
