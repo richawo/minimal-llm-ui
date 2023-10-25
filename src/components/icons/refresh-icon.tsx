@@ -1,10 +1,12 @@
 type Props = {
   className?: string;
+  onClick?: () => void;
 };
 
-export const RefreshIcon = ({ className }: Props) => {
+export const RefreshIcon = ({ className, onClick }: Props) => {
   return (
     <svg
+    onClick={onClick}
       className={className}
       width="69"
       height="63"

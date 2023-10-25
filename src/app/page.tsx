@@ -77,9 +77,14 @@ export default function Home() {
       body: JSON.stringify({
         conversationPath: "./conversations",
       }),
-    }).then((response) =>
-      response.json().then((data) => setConversations(data)),
-    );
+      headers: {
+        Accept: "*/*",
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
+      console.log(response),
+        response.json().then((data) => setConversations(data));
+    });
   }
 
   async function triggerPrompt() {
@@ -180,6 +185,65 @@ export default function Home() {
     });
   }
 
+  async function refreshMessage(activeMsg: {
+    type: string;
+    id: any;
+    timestamp: number;
+    content: string;
+    model?: string;
+  }) {
+    console.log("refresh");
+    let index =
+      messages.findIndex((m) => m.id == activeMsg.id) -
+      (activeMsg.type == "human" ? 0 : 1);
+    let filtered = messages.filter((m, i) => index > i);
+    console.log("filtered", filtered);
+    if (!ollama) return;
+
+    const msg = {
+      type: "human",
+      id: generateRandomString(8),
+      timestamp: Date.now(),
+      content: activeMsg.content,
+    };
+
+    filtered.push(msg);
+    setMessages(() => filtered);
+    // useEffect on change here if the last value was a human message?
+
+    const model = activeModel;
+    let streamedText = "";
+    messages.push(msg);
+    const msgCache = [...messages];
+    const stream = await ollama.stream(
+      messages.map((m) =>
+        m.type == "human"
+          ? new HumanMessage(m.content)
+          : new AIMessage(m.content),
+      ),
+    );
+    setNewPrompt("");
+    let updatedMessages = [...msgCache];
+    let c = 0;
+    for await (const chunk of stream) {
+      streamedText += chunk.content;
+      const aiMsg = {
+        type: "ai",
+        id: generateRandomString(8),
+        timestamp: Date.now(),
+        content: streamedText,
+        model,
+      };
+      updatedMessages = [...msgCache, aiMsg];
+      setMessages(() => updatedMessages);
+      c++;
+      if (c % 8 == 0) scrollToBottom();
+    }
+
+    scrollToBottom();
+    persistConvo(updatedMessages);
+  }
+
   const scrollToBottom = () => {
     if (msgContainerRef.current) {
       msgContainerRef.current.scrollTo({
@@ -211,7 +275,7 @@ export default function Home() {
   }
 
   return (
-    <main className="relative flex max-h-screen min-h-screen items-center justify-between overflow-hidden w-screen max-w-[100vw]">
+    <main className="relative flex max-h-screen min-h-screen w-screen max-w-[100vw] items-center justify-between overflow-hidden">
       <motion.div
         className={cn("absolute left-0 top-0 z-50 p-3")}
         initial={false}
@@ -258,7 +322,10 @@ export default function Home() {
             </div>
           ))}
       </motion.div>
-      <div className="flex max-h-screen min-h-screen w-full flex-col" style={{ maxWidth: "calc(100vw - " + (menuState ? 20 : 0) + "rem)" }}>
+      <div
+        className="flex max-h-screen min-h-screen w-full flex-col"
+        style={{ maxWidth: "calc(100vw - " + (menuState ? 20 : 0) + "rem)" }}
+      >
         <AppNavbar
           documentName={activeConversation}
           setDocumentName={() => {}}
@@ -284,7 +351,7 @@ export default function Home() {
                 >
                   <div
                     className={cn(
-                      "flex h-fit cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1 max-w-full",
+                      "flex h-fit max-w-full cursor-pointer flex-col items-center gap-y-1 rounded-md border border-[#191919] px-2 py-1",
                       { "ml-auto": msg.type == "human" },
                       { "mr-auto": msg.type == "ai" },
                     )}
@@ -312,7 +379,10 @@ export default function Home() {
                       { "mr-auto": msg.type == "ai" },
                     )}
                   >
-                    <RefreshIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+                    <RefreshIcon
+                      onClick={() => refreshMessage(msg)}
+                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                    />
                     <CopyIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
                     <TrashIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
                   </div>

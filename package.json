@@ -11,6 +11,7 @@
   "dependencies": {
     "ai": "^2.2.16",
     "clsx": "^2.0.0",
+    "encoding": "^0.1.13",
     "framer-motion": "^10.16.4",
     "langchain": "^0.0.167",
     "next": "13.5.5",
