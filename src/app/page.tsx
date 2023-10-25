@@ -192,31 +192,21 @@ export default function Home() {
     content: string;
     model?: string;
   }) {
-    console.log("refresh");
+    if (!ollama) return;
     let index =
       messages.findIndex((m) => m.id == activeMsg.id) -
       (activeMsg.type == "human" ? 0 : 1);
-    let filtered = messages.filter((m, i) => index > i);
+    let filtered = messages.filter((m, i) => index >= i);
     console.log("filtered", filtered);
-    if (!ollama) return;
 
-    const msg = {
-      type: "human",
-      id: generateRandomString(8),
-      timestamp: Date.now(),
-      content: activeMsg.content,
-    };
-
-    filtered.push(msg);
     setMessages(() => filtered);
     // useEffect on change here if the last value was a human message?
 
     const model = activeModel;
     let streamedText = "";
-    messages.push(msg);
-    const msgCache = [...messages];
+    const msgCache = [...filtered];
     const stream = await ollama.stream(
-      messages.map((m) =>
+      filtered.map((m) =>
         m.type == "human"
           ? new HumanMessage(m.content)
           : new AIMessage(m.content),
