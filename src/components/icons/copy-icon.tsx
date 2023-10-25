@@ -1,10 +1,12 @@
 type Props = {
   className?: string;
+  onClick?: () => void;
 };
 
-export const CopyIcon = ({ className }: Props) => {
+export const CopyIcon = ({ className, onClick }: Props) => {
   return (
     <svg
+      onClick={onClick || (() => {})}
       className={className}
       width="59"
       height="65"

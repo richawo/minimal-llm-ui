@@ -373,7 +373,7 @@ export default function Home() {
                       onClick={() => refreshMessage(msg)}
                       className="h-4 w-4 fill-white/50 hover:fill-white/75"
                     />
-                    <CopyIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+                    <CopyIcon onClick={() => {navigator.clipboard.writeText(msg.content)}} className="h-4 w-4 fill-white/50 hover:fill-white/75" />
                     <TrashIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
                   </div>
                 </div>
