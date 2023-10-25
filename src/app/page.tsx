@@ -185,6 +185,18 @@ export default function Home() {
     });
   }
 
+  function deleteMessage(activeMsg: {
+    type: string;
+    id: any;
+    timestamp: number;
+    content: string;
+    model?: string;
+  }) {
+    let filtered = messages.filter((m, i) => m.id != activeMsg.id);
+    setMessages(() => filtered);
+    persistConvo(filtered);
+  }
+
   async function refreshMessage(activeMsg: {
     type: string;
     id: any;
@@ -373,8 +385,18 @@ export default function Home() {
                       onClick={() => refreshMessage(msg)}
                       className="h-4 w-4 fill-white/50 hover:fill-white/75"
                     />
-                    <CopyIcon onClick={() => {navigator.clipboard.writeText(msg.content)}} className="h-4 w-4 fill-white/50 hover:fill-white/75" />
-                    <TrashIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
+                    <CopyIcon
+                      onClick={() => {
+                        navigator.clipboard.writeText(msg.content);
+                      }}
+                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                    />
+                    <TrashIcon
+                      onClick={() => {
+                        deleteMessage(msg);
+                      }}
+                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                    />
                   </div>
                 </div>
               ))}
