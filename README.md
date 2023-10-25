@@ -35,7 +35,6 @@ To-do
 ---------------
 
 - Add edit message icon for user messages
-- Implement message buttons
 - Summarise conversations
 - Incorporate visualisations
 - Convert to desktop app so that it can be more powerful
