@@ -14,6 +14,7 @@ import AppNavbar from "@/components/app-navbar";
 import { MenuToggle } from "@/components/menu-toggle";
 import { motion, useCycle } from "framer-motion";
 import { RightChevron } from "@/components/icons/right-chevron";
+import { Interface } from "readline";
 
 export default function Home() {
   const [newPrompt, setNewPrompt] = useState("");
@@ -65,13 +66,25 @@ function getInitialModel() {
   .then((data) => {
     console.log(data);
     setAvailableModels(data.models);
-    console.log(data.models[0]?.name);
-    setActiveModel(data.models[0]?.name);
-    const initOllama = new ChatOllama({
-      baseUrl: "http://localhost:11434",
-      model: data.models[0]?.name,
-    });
-    setOllama(initOllama);
+    
+    // get initial model from local storage
+    const storedModel = localStorage.getItem("initialLocalLM");
+    if (storedModel && storedModel!== "" && data.models.findIndex((m: {name: string}) => m.name.toLowerCase() === storedModel.toLowerCase()) > -1) {
+      setActiveModel(storedModel);
+      const newOllama = new ChatOllama({
+        baseUrl: "http://localhost:11434",
+        model: storedModel,
+      });
+      setOllama(newOllama);
+    } else {
+      // set initial model to first model in list
+      setActiveModel(data.models[0]?.name);
+      const initOllama = new ChatOllama({
+        baseUrl: "http://localhost:11434",
+        model: data.models[0]?.name,
+      });
+      setOllama(initOllama);
+    }
   });
 }
 
