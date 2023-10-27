@@ -52,24 +52,28 @@ export default function Home() {
   }, [activeConversation]);
 
   useEffect(() => {
-    // Get models
-    fetch("http://localhost:11434/api/tags")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setAvailableModels(data.models);
-        console.log(data.models[0]?.name);
-        setActiveModel(data.models[0]?.name);
-        const initOllama = new ChatOllama({
-          baseUrl: "http://localhost:11434",
-          model: data.models[0]?.name,
-        });
-        setOllama(initOllama);
-      });
+    // Get the initial model
+    getInitialModel();
 
     // Get existing conversations
     getExistingConvos();
   }, []);
+
+function getInitialModel() {
+  fetch("http://localhost:11434/api/tags")
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    setAvailableModels(data.models);
+    console.log(data.models[0]?.name);
+    setActiveModel(data.models[0]?.name);
+    const initOllama = new ChatOllama({
+      baseUrl: "http://localhost:11434",
+      model: data.models[0]?.name,
+    });
+    setOllama(initOllama);
+  });
+}
 
   async function getExistingConvos() {
     fetch("../api/fs/get-convos", {
