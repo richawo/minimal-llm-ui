@@ -20,23 +20,12 @@ export default function AppNavbar({
   setActiveModel,
   setOllama,
 }: Props) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setDocumentName(value); // Call the callback function to update the parent component
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const toggleShareMenu = () => {
-    console.log(isShareMenuOpen);
-    setIsShareMenuOpen(!isShareMenuOpen);
-    setIsProfileMenuOpen(false);
   };
 
   useEffect(() => {
@@ -75,6 +64,8 @@ export default function AppNavbar({
       baseUrl: "http://localhost:11434",
       model: availableModels[i]?.name,
     });
+    //store in local storage
+    localStorage.setItem("initialLocalLM", availableModels[i]?.name);
     setOllama(newOllama);
   }
 
