@@ -14,9 +14,11 @@ import AppNavbar from "@/components/app-navbar";
 import { MenuToggle } from "@/components/menu-toggle";
 import { motion, useCycle } from "framer-motion";
 import { RightChevron } from "@/components/icons/right-chevron";
-import { Interface } from "readline";
+import { SaveIcon } from "@/components/icons/save-icon";
+import { AppModal, useModal } from "./context/ModalContext";
 
 export default function Home() {
+  const { setModalConfig } = useModal();
   const [newPrompt, setNewPrompt] = useState("");
   const [messages, setMessages] = useState<
     {
@@ -405,21 +407,25 @@ export default function Home() {
                       { "mr-auto": msg.type == "ai" },
                     )}
                   >
+                    {msg.type == "human" && <SaveIcon
+                      onClick={() => {setModalConfig({modal: AppModal.SAVE_PROMPT, data: msg})}}
+                      className="h-4 w-4 fill-white/50 hover:fill-white/90"
+                    />}
                     <RefreshIcon
                       onClick={() => refreshMessage(msg)}
-                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                      className="h-4 w-4 fill-white/50 hover:fill-white/90"
                     />
                     <CopyIcon
                       onClick={() => {
                         navigator.clipboard.writeText(msg.content);
                       }}
-                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                      className="h-4 w-4 fill-white/50 hover:fill-white/90"
                     />
                     <TrashIcon
                       onClick={() => {
                         deleteMessage(msg);
                       }}
-                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                      className="h-4 w-4 fill-white/50 hover:fill-white/90"
                     />
                   </div>
                 </div>
