@@ -16,6 +16,7 @@ import { motion, useCycle } from "framer-motion";
 import { RightChevron } from "@/components/icons/right-chevron";
 import { SaveIcon } from "@/components/icons/save-icon";
 import { AppModal, useModal } from "./context/ModalContext";
+import ExpandingtextInput from "@/components/expanding-text-input";
 
 export default function Home() {
   const { setModalConfig } = useModal();
@@ -407,10 +408,17 @@ export default function Home() {
                       { "mr-auto": msg.type == "ai" },
                     )}
                   >
-                    {msg.type == "human" && <SaveIcon
-                      onClick={() => {setModalConfig({modal: AppModal.SAVE_PROMPT, data: msg})}}
-                      className="h-4 w-4 fill-white/50 hover:fill-white/90"
-                    />}
+                    {msg.type == "human" && (
+                      <SaveIcon
+                        onClick={() => {
+                          setModalConfig({
+                            modal: AppModal.SAVE_PROMPT,
+                            data: msg,
+                          });
+                        }}
+                        className="h-4 w-4 fill-white/50 hover:fill-white/90"
+                      />
+                    )}
                     <RefreshIcon
                       onClick={() => refreshMessage(msg)}
                       className="h-4 w-4 fill-white/50 hover:fill-white/90"
@@ -434,9 +442,8 @@ export default function Home() {
           </div>
         </div>
         <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md px-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
-          <textarea
-            ref={textareaRef}
-            onChange={(e) => {
+          <ExpandingtextInput
+            onChange={(e: any) => {
               if (e.target.value != "\n") setNewPrompt(e.target.value);
             }}
             onKeyDown={(e) => {
@@ -455,11 +462,9 @@ export default function Home() {
                 console.log(e);
               }
             }}
-            rows={1}
-            className="flex max-h-[200px] w-full resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
-            placeholder="Send a message"
             value={newPrompt}
-          ></textarea>
+            placeholder="Send a message"
+          />
         </div>
       </div>
     </main>
