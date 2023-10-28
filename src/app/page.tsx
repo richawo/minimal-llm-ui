@@ -60,33 +60,40 @@ export default function Home() {
     getExistingConvos();
   }, []);
 
-function getInitialModel() {
-  fetch("http://localhost:11434/api/tags")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    setAvailableModels(data.models);
-    
-    // get initial model from local storage
-    const storedModel = localStorage.getItem("initialLocalLM");
-    if (storedModel && storedModel!== "" && data.models.findIndex((m: {name: string}) => m.name.toLowerCase() === storedModel.toLowerCase()) > -1) {
-      setActiveModel(storedModel);
-      const newOllama = new ChatOllama({
-        baseUrl: "http://localhost:11434",
-        model: storedModel,
+  function getInitialModel() {
+    fetch("http://localhost:11434/api/tags")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setAvailableModels(data.models);
+
+        // get initial model from local storage
+        const storedModel = localStorage.getItem("initialLocalLM");
+        if (
+          storedModel &&
+          storedModel !== "" &&
+          data.models.findIndex(
+            (m: { name: string }) =>
+              m.name.toLowerCase() === storedModel.toLowerCase(),
+          ) > -1
+        ) {
+          setActiveModel(storedModel);
+          const newOllama = new ChatOllama({
+            baseUrl: "http://localhost:11434",
+            model: storedModel,
+          });
+          setOllama(newOllama);
+        } else {
+          // set initial model to first model in list
+          setActiveModel(data.models[0]?.name);
+          const initOllama = new ChatOllama({
+            baseUrl: "http://localhost:11434",
+            model: data.models[0]?.name,
+          });
+          setOllama(initOllama);
+        }
       });
-      setOllama(newOllama);
-    } else {
-      // set initial model to first model in list
-      setActiveModel(data.models[0]?.name);
-      const initOllama = new ChatOllama({
-        baseUrl: "http://localhost:11434",
-        model: data.models[0]?.name,
-      });
-      setOllama(initOllama);
-    }
-  });
-}
+  }
 
   async function getExistingConvos() {
     fetch("../api/fs/get-convos", {
