@@ -9,9 +9,17 @@ import { cn } from "@/utils/cn";
 export default function SavePromptModal() {
   const { modalConfig, setModalConfig } = useModal();
   const [content, setContent] = useState<string>(modalConfig.data.content);
+  const [copied, setCopied] = useState<boolean>(false);
 
   function closeModal() {
     setModalConfig({ modal: undefined, data: undefined });
+  }
+
+  function toggleCopied() {
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   }
 
   function handleChange(value: string) {
@@ -54,7 +62,20 @@ export default function SavePromptModal() {
                   <span className="text-white/50">
                     {"Prefix input variables with:"}
                   </span>
-                  <code>%var:</code>
+                  <code
+                    className="cursor-pointer hover:bg-white/20"
+                    onClick={() => {
+                      navigator.clipboard.writeText("%var:");
+                      toggleCopied();
+                    }}
+                  >
+                    %var:
+                  </code>
+                  {copied && (
+                    <span className="ml-2 rounded-sm bg-green-400/10 px-2 py-1 text-xs text-green-400">
+                      {"Copied"}
+                    </span>
+                  )}
                 </div>
                 <FixedTextInput
                   onInput={(e) => handleChange(e.target.textContent)}
