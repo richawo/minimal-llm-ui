@@ -2,8 +2,9 @@
 
 import { useModal } from "@/app/context/ModalContext";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import FixedTextInput from "../fixed-text-input";
+import { cn } from "@/utils/cn";
 
 export default function SavePromptModal() {
   const { modalConfig, setModalConfig } = useModal();
@@ -12,6 +13,12 @@ export default function SavePromptModal() {
   function closeModal() {
     setModalConfig({ modal: undefined, data: undefined });
   }
+
+  function handleChange(value: string) {
+    console.log(value, content);
+    if (value != "\n") setContent(value);
+  }
+
   const bgVariant = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
@@ -43,16 +50,26 @@ export default function SavePromptModal() {
               >
                 <div>{"Save Prompt"}</div>
                 <hr className="border-white/10" />
-                <div><span className="text-white/50">{"Prefix input variables with:"}</span><code>%var:</code></div>
+                <div>
+                  <span className="text-white/50">
+                    {"Prefix input variables with:"}
+                  </span>
+                  <code>%var:</code>
+                </div>
                 <FixedTextInput
-                  onChange={(e: any) => {
-                    if (e.target.value != "\n") setContent(e.target.value);
-                  }}
+                  onInput={(e) => handleChange(e.target.textContent)}
                   value={content}
                   placeholder={""}
                 />
                 <hr className="border-white/10" />
-                <div>{"Do you want to save your chat?"}</div>
+                <button
+                  className={cn("rounded-sm px-2 py-1 text-black", {
+                    "bg-white": content && content.length > 0,
+                    "bg-white/50": content.length == 0,
+                  })}
+                >
+                  {"Save"}
+                </button>
               </motion.div>
             </div>
           </div>
