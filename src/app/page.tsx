@@ -16,7 +16,7 @@ import { motion, useCycle } from "framer-motion";
 import { RightChevron } from "@/components/icons/right-chevron";
 import { SaveIcon } from "@/components/icons/save-icon";
 import { AppModal, useModal } from "./context/ModalContext";
-import ExpandingtextInput from "@/components/expanding-text-input";
+import ExpandingTextInput from "@/components/expanding-text-input";
 
 export default function Home() {
   const { setModalConfig } = useModal();
@@ -41,15 +41,7 @@ export default function Home() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const msgContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = "inherit";
-      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
-      textareaRef.current.style.overflow = `${
-        textareaRef?.current?.scrollHeight > 200 ? "auto" : "hidden"
-      }`;
-    }
-  }, [newPrompt]);
+  
 
   useEffect(() => {
     scrollToBottom();
@@ -133,7 +125,7 @@ export default function Home() {
         m.type == "human"
           ? new HumanMessage(m.content)
           : new AIMessage(m.content),
-      ),
+      ),    
     );
     setNewPrompt("");
     let updatedMessages = [...msgCache];
@@ -442,7 +434,7 @@ export default function Home() {
           </div>
         </div>
         <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md px-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
-          <ExpandingtextInput
+          <ExpandingTextInput
             onChange={(e: any) => {
               if (e.target.value != "\n") setNewPrompt(e.target.value);
             }}

@@ -2,9 +2,12 @@
 
 import { useModal } from "@/app/context/ModalContext";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import FixedTextInput from "../fixed-text-input";
 
 export default function SavePromptModal() {
   const { modalConfig, setModalConfig } = useModal();
+  const [content, setContent] = useState<string>(modalConfig.data.content);
 
   function closeModal() {
     setModalConfig({ modal: undefined, data: undefined });
@@ -34,14 +37,22 @@ export default function SavePromptModal() {
             className="bg-white/black relative flex max-h-[80vh] transform flex-col overflow-hidden rounded-sm border border-white/20 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl"
           >
             <div className="rounded-sm bg-black">
-              <motion.div layout className="rounded-sm bg-black text-white text-sm flex flex-col gap-y-2 p-2">
+              <motion.div
+                layout
+                className="flex flex-col gap-y-2 rounded-sm bg-black p-2 text-sm text-white"
+              >
                 <div>{"Save Prompt"}</div>
                 <hr className="border-white/10" />
-                <div >{JSON.stringify(modalConfig.data.content)}</div>
+                <div><span className="text-white/50">{"Prefix input variables with:"}</span><code>%var:</code></div>
+                <FixedTextInput
+                  onChange={(e: any) => {
+                    if (e.target.value != "\n") setContent(e.target.value);
+                  }}
+                  value={content}
+                  placeholder={""}
+                />
                 <hr className="border-white/10" />
-                <div>
-                  {"Do you want to save your chat?"}
-                </div>
+                <div>{"Do you want to save your chat?"}</div>
               </motion.div>
             </div>
           </div>
