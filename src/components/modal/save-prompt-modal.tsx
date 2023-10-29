@@ -1,14 +1,15 @@
 "use client";
 
 import { useModal } from "@/app/context/ModalContext";
-import { motion } from "framer-motion";
-import { useRef, useState } from "react";
-import FixedTextInput from "../fixed-text-input";
 import { cn } from "@/utils/cn";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import FixedTextInput from "../fixed-text-input";
 
 export default function SavePromptModal() {
   const { modalConfig, setModalConfig } = useModal();
   const [content, setContent] = useState<string>(modalConfig.data.content);
+  const [matchedText, setMatchedText] = useState<string[]>([]);
   const [copied, setCopied] = useState<boolean>(false);
 
   function closeModal() {
@@ -25,7 +26,19 @@ export default function SavePromptModal() {
   function handleChange(value: string) {
     console.log(value, content);
     if (value != "\n") setContent(value);
+    const regex = /%var:[^ ,.?!\n]+/g; // Regular expression to match %var: followed by any non-space characters
+
+    const arr: string[] = [];
+    const matched = value.matchAll(regex);
+    (matched as any).forEach((x: any) => arr.push(x[0]));
+    setContent(value);
+    setMatchedText(arr);
+    console.log(value.matchAll(regex));
   }
+
+  useEffect(() => {
+    setContent(modalConfig.data.content);
+  }, [modalConfig.data.content]);
 
   const bgVariant = {
     hidden: { opacity: 0 },
@@ -72,7 +85,7 @@ export default function SavePromptModal() {
                     %var:
                   </code>
                   {copied && (
-                    <span className="ml-2 rounded-sm bg-green-400/10 px-2 py-1 text-xs text-green-400">
+                    <span className="ml-2 rounded-sm bg-green-400/10 px-2 py-1 text-xs font-semibold text-green-400">
                       {"Copied"}
                     </span>
                   )}
@@ -82,6 +95,16 @@ export default function SavePromptModal() {
                   value={content}
                   placeholder={""}
                 />
+                <div className="flex flex-wrap gap-2">
+                  {matchedText.map((x) => (
+                    <div
+                      key={x}
+                      className="bg-blue-400/10 px-2 py-1 text-xs text-blue-400"
+                    >
+                      {x}
+                    </div>
+                  ))}
+                </div>
                 <hr className="border-white/10" />
                 <button
                   className={cn("rounded-sm px-2 py-1 text-black", {

@@ -10,10 +10,14 @@ type Props = {
   height?: number | string;
 };
 
-export default function FixedTextInput(
-  { onInput, onKeyDown, value, placeholder, height }: Props,
-) {
-  const [initValue, setInitValue] = useState<string>(value)
+export default function FixedTextInput({
+  onInput,
+  onKeyDown,
+  value,
+  placeholder,
+  height,
+}: Props) {
+  const [initValue, setInitValue] = useState<string>(value);
   return (
     <div
       contentEditable={true}
