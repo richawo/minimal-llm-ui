@@ -26,11 +26,13 @@ export default function SavePromptModal() {
   function handleChange(value: string) {
     console.log(value, content);
     if (value != "\n") setContent(value);
-    const regex = /%var:[^ ,.?!\n]+/g; // Regular expression to match %var: followed by any non-space characters
+    const regex = /%var:[^ ,.?!\n]+|(%var:[^ ,.?!\n]+[ ,.?!\n])/g; // Regular expression to match %var: followed by any non-space characters
 
     const arr: string[] = [];
     const matched = value.matchAll(regex);
-    (matched as any).forEach((x: any) => arr.push(x[0]));
+    (matched as any).forEach((x: any) => {
+      if (!arr.includes(x[0])) arr.push(x[0]);
+    });
     setContent(value);
     setMatchedText(arr);
     console.log(value.matchAll(regex));
