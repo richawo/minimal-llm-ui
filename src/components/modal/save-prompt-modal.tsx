@@ -5,6 +5,7 @@ import { cn } from "@/utils/cn";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import FixedTextInput from "../fixed-text-input";
+import ExpandingTextInput from "../expanding-text-input";
 
 export default function SavePromptModal() {
   const { modalConfig, setModalConfig } = useModal();
@@ -26,7 +27,7 @@ export default function SavePromptModal() {
 
   function handleChange(value: string) {
     console.log(value, content);
-    if (value != "\n") setContent(value);
+    setContent(value);
     const regex = /%var:[^ ,.?!\n]+|(%var:[^ ,.?!\n]+[ ,.?!\n])/g; // Regular expression to match %var: followed by any non-space characters
 
     const arr: string[] = [];
@@ -34,14 +35,15 @@ export default function SavePromptModal() {
     (matched as any).forEach((x: any) => {
       if (!arr.includes(x[0])) arr.push(x[0]);
     });
-    setContent(value);
     setMatchedText(arr);
     console.log(value.matchAll(regex));
   }
 
-  function savePromptName(value: string) {
-    if (value != "\n") setPromptName(value);
-  }
+  const savePromptName = (e: any) => {
+    const value = e.target.value;
+    const alphanumericOnly = value.replace(/[^a-zA-Z0-9_]/g, '');
+    setPromptName(alphanumericOnly);
+  };
 
   useEffect(() => {
     setContent(modalConfig.data.content);
@@ -113,11 +115,11 @@ export default function SavePromptModal() {
                   ))}
                 </div>
                 <hr className="border-white/10" />
-                <FixedTextInput
-                  onInput={(e) => savePromptName(e.target.textContent)}
+                <ExpandingTextInput
+                  onChange={(e: any) => {savePromptName(e)}}
                   value={promptName}
                   placeholder={"Enter Prompt Name..."}
-                  height={50}
+                  expand={false}
                 />
                 <hr className="border-white/10" />
                 <button

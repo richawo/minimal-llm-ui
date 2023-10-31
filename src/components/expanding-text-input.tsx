@@ -7,6 +7,7 @@ type Props = {
   onKeyDown?: (e: any) => void;
   value: string;
   placeholder: string;
+  expand?: boolean;
 };
 
 export default function ExpandingTextInput({
@@ -14,10 +15,11 @@ export default function ExpandingTextInput({
   onKeyDown,
   value,
   placeholder,
+  expand = true,
 }: Props) {
 
   useEffect(() => {
-    if (textareaRef && textareaRef.current) {
+    if (expand && textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "inherit";
       textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
       textareaRef.current.style.overflow = `${
