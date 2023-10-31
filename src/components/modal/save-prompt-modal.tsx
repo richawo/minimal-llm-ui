@@ -11,6 +11,7 @@ export default function SavePromptModal() {
   const [content, setContent] = useState<string>(modalConfig.data.content);
   const [matchedText, setMatchedText] = useState<string[]>([]);
   const [copied, setCopied] = useState<boolean>(false);
+  const [promptName, setPromptName] = useState<string>("");
 
   function closeModal() {
     setModalConfig({ modal: undefined, data: undefined });
@@ -36,6 +37,10 @@ export default function SavePromptModal() {
     setContent(value);
     setMatchedText(arr);
     console.log(value.matchAll(regex));
+  }
+
+  function savePromptName(value: string) {
+    if (value != "\n") setPromptName(value);
   }
 
   useEffect(() => {
@@ -107,6 +112,13 @@ export default function SavePromptModal() {
                     </div>
                   ))}
                 </div>
+                <hr className="border-white/10" />
+                <FixedTextInput
+                  onInput={(e) => savePromptName(e.target.textContent)}
+                  value={promptName}
+                  placeholder={"Enter Prompt Name..."}
+                  height={50}
+                />
                 <hr className="border-white/10" />
                 <button
                   className={cn("rounded-sm px-2 py-1 text-black", {
