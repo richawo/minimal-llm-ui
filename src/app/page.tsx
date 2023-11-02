@@ -17,9 +17,11 @@ import { RightChevron } from "@/components/icons/right-chevron";
 import { SaveIcon } from "@/components/icons/save-icon";
 import { AppModal, useModal } from "./context/ModalContext";
 import ExpandingTextInput from "@/components/expanding-text-input";
+import { usePrompts } from "./context/PromptContext";
 
 export default function Home() {
   const { setModalConfig } = useModal();
+  const { promptTemplate } = usePrompts();
   const [newPrompt, setNewPrompt] = useState("");
   const [messages, setMessages] = useState<
     {
@@ -434,6 +436,9 @@ export default function Home() {
           </div>
         </div>
         <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md px-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
+          <div>
+            {promptTemplate.map((t) => (<div key={t.name}>{t.name}</div>))}
+          </div>
           <ExpandingTextInput
             onChange={(e: any) => {
               if (e.target.value != "\n") setNewPrompt(e.target.value);

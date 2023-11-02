@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import ModalSelector from "@/components/modal/modal-selector";
 import { ModalProvider } from "./context/ModalContext";
+import { PromptsProvider } from "./context/PromptContext";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -19,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ModalProvider>
-        <ModalSelector></ModalSelector>
-        <body className={montserrat.className}>{children}</body>
+        <PromptsProvider>
+          <ModalSelector></ModalSelector>
+          <body className={montserrat.className}>{children}</body>
+        </PromptsProvider>
       </ModalProvider>
     </html>
   );

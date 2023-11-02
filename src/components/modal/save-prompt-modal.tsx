@@ -6,8 +6,10 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import FixedTextInput from "../fixed-text-input";
 import ExpandingTextInput from "../expanding-text-input";
+import { usePrompts } from "@/app/context/PromptContext";
 
 export default function SavePromptModal() {
+  const { addPromptTemplate } = usePrompts();
   const { modalConfig, setModalConfig } = useModal();
   const [content, setContent] = useState<string>(modalConfig.data.content);
   const [matchedText, setMatchedText] = useState<string[]>([]);
@@ -44,6 +46,18 @@ export default function SavePromptModal() {
     const alphanumericOnly = value.replace(/[^a-zA-Z0-9_]/g, '');
     setPromptName(alphanumericOnly);
   };
+
+  function savePrompt() {
+    console.log(promptName, content, matchedText);
+    const alphanumericOnly = promptName.replace(/[^a-zA-Z0-9_]/g, '');
+    const newPromptTemplate = {
+      name: alphanumericOnly,
+      content,
+      matchedText,
+    };
+    addPromptTemplate(newPromptTemplate);
+    closeModal();
+  }
 
   useEffect(() => {
     setContent(modalConfig.data.content);
@@ -123,6 +137,8 @@ export default function SavePromptModal() {
                 />
                 <hr className="border-white/10" />
                 <button
+                // persist prompt name, content, and matched text
+                  onClick={savePrompt}
                   className={cn("rounded-sm px-2 py-1 text-black", {
                     "bg-white": content && content.length > 0,
                     "bg-white/50": content.length == 0,
