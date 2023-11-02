@@ -53,7 +53,7 @@ export default function SavePromptModal() {
     const newPromptTemplate = {
       name: alphanumericOnly,
       content,
-      matchedText,
+      inputs: matchedText,
     };
     addPromptTemplate(newPromptTemplate);
     closeModal();
@@ -138,6 +138,7 @@ export default function SavePromptModal() {
                 <hr className="border-white/10" />
                 <button
                 // persist prompt name, content, and matched text
+                  disabled={!content || content.length == 0 || promptName.length == 0 || promptName.length > 15}
                   onClick={savePrompt}
                   className={cn("rounded-sm px-2 py-1 text-black", {
                     "bg-white": content && content.length > 0,

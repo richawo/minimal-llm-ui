@@ -13,7 +13,7 @@ export function PromptsProvider({ children }: { children: React.ReactNode }) {
     {
       name: string;
       content: string;
-      matchedText: string[];
+      inputs: string[];
     }[]
   >([]);
 

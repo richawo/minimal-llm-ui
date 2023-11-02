@@ -12,7 +12,7 @@ import { CopyIcon } from "@/components/icons/copy-icon";
 import { TrashIcon } from "@/components/icons/trash-icon";
 import AppNavbar from "@/components/app-navbar";
 import { MenuToggle } from "@/components/menu-toggle";
-import { motion, useCycle } from "framer-motion";
+import { AnimatePresence, motion, useCycle } from "framer-motion";
 import { RightChevron } from "@/components/icons/right-chevron";
 import { SaveIcon } from "@/components/icons/save-icon";
 import { AppModal, useModal } from "./context/ModalContext";
@@ -42,8 +42,6 @@ export default function Home() {
   const [menuState, toggleMenuState] = useCycle(false, true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const msgContainerRef = useRef<HTMLDivElement>(null);
-
-  
 
   useEffect(() => {
     scrollToBottom();
@@ -127,7 +125,7 @@ export default function Home() {
         m.type == "human"
           ? new HumanMessage(m.content)
           : new AIMessage(m.content),
-      ),    
+      ),
     );
     setNewPrompt("");
     let updatedMessages = [...msgCache];
@@ -435,33 +433,73 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md px-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
-          <div>
-            {promptTemplate.map((t) => (<div key={t.name}>{t.name}</div>))}
+
+        <div className="flex flex-col gap-y-2 px-4">
+          {newPrompt &&
+            newPrompt.startsWith("/") &&
+            newPrompt == "/" + newPrompt.replace(/[^a-zA-Z0-9_]/g, "") && (
+              <motion.div className="flex flex-col rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white">
+                  {promptTemplate.map(
+                    (t: {
+                      name: string;
+                      content: string;
+                      inputs: string[];
+                    }) => (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        layout
+                        layoutId={t.name}
+                        key={t.name}
+                        className="cursor-pointer hover:bg-[#0a0a0a]"
+                      >
+                        {/* if the content is grater than 50 then take the first and last 20 chars seperated by ... */}
+                        {t.name} -{" "}
+                        {t.inputs?.map((i: string) => (
+                          <span
+                            className="rounded-md bg-white/10 px-1 py-0.5 text-xs"
+                            key={t + "-" + i}
+                          >
+                            {i.slice(5)}
+                          </span>
+                        ))}{" "}
+                        -{" "}
+                        {t.content.length < 100
+                          ? t.content
+                          : t.content.slice(0, 45) +
+                            "..." +
+                            t.content.slice(-45)}
+                      </motion.div>
+                    ),
+                  )}
+              </motion.div>
+            )}
+          <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
+            <ExpandingTextInput
+              onChange={(e: any) => {
+                if (e.target.value != "\n") setNewPrompt(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (
+                  e.key === "Enter" &&
+                  !e.metaKey &&
+                  !e.shiftKey &&
+                  !e.altKey &&
+                  newPrompt !== ""
+                ) {
+                  triggerPrompt();
+                } else if (
+                  e.key === "Enter" &&
+                  (e.metaKey || !e.shiftKey || !e.altKey)
+                ) {
+                  console.log(e);
+                }
+              }}
+              value={newPrompt}
+              placeholder="Send a message"
+            />
           </div>
-          <ExpandingTextInput
-            onChange={(e: any) => {
-              if (e.target.value != "\n") setNewPrompt(e.target.value);
-            }}
-            onKeyDown={(e) => {
-              if (
-                e.key === "Enter" &&
-                !e.metaKey &&
-                !e.shiftKey &&
-                !e.altKey &&
-                newPrompt !== ""
-              ) {
-                triggerPrompt();
-              } else if (
-                e.key === "Enter" &&
-                (e.metaKey || !e.shiftKey || !e.altKey)
-              ) {
-                console.log(e);
-              }
-            }}
-            value={newPrompt}
-            placeholder="Send a message"
-          />
         </div>
       </div>
     </main>
