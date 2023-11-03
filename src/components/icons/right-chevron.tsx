@@ -1,10 +1,12 @@
 type Props = {
   className?: string;
+  onClick?: (e: any) => void;
 };
 
-export const RightChevron = ({ className }: Props) => {
+export const RightChevron = ({ className, onClick=undefined }: Props) => {
   return (
     <svg
+      onClick={() => onClick}
       className={className}
       width="77"
       height="77"
