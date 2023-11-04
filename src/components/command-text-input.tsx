@@ -18,11 +18,22 @@ export default function CommandTextInput({
   const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
   const [commandValues, setCommandValues] = useState<any>(); //base it on active prompt template
   const [resultArray, setResultArray] = useState<string[]>([]);
-  // const [newPrompt, setNewPrompt] = useState<string>("");
   const [inputValues, setInputValues] = useState<Map<string, string>>();
   const commandRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (
+      activePromptTemplate?.inputs &&
+      activePromptTemplate.inputs?.length > 0
+    ) {
+      const im = new Map<string, string>([
+        ...activePromptTemplate.inputs.map((x: string) => [
+          x,
+          "<" + x.substring(5) + ">",
+        ]),
+      ]);
+      setInputValues(im);
+    }
     console.log(activePromptTemplate);
     const inputs = [...activePromptTemplate?.inputs];
     const content: string = activePromptTemplate.content;
@@ -65,7 +76,7 @@ export default function CommandTextInput({
       </button>
       <div
         ref={commandRef}
-        className="flex w-full flex-wrap gap-5 px-5 text-xs"
+        className="flex w-full flex-wrap gap-5 px-5 text-xs overflow-y-auto"
       >
         <div
           style={{ wordWrap: "break-word" }}
