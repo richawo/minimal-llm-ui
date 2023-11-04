@@ -17,7 +17,12 @@ export default function CommandTextInput({
 }: Props) {
   const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
   const [commandValues, setCommandValues] = useState<any>(); //base it on active prompt template
-  const [resultArray, setResultArray] = useState<string[]>([]);
+  const [resultArray, setResultArray] = useState<{ v: string; i?: boolean }[]>(
+    [],
+  );
+  const [initResultArray, setInitResultArray] = useState<
+    { v: string; i?: boolean }[]
+  >([]);
   const [inputValues, setInputValues] = useState<Map<string, string>>();
   const commandRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +34,8 @@ export default function CommandTextInput({
       const im = new Map<string, string>([
         ...activePromptTemplate.inputs.map((x: string) => [
           x,
-          "<" + x.substring(5) + ">",
+          x
+          // "<" + x.substring(5) + ">",
         ]),
       ]);
       setInputValues(im);
@@ -39,19 +45,45 @@ export default function CommandTextInput({
     const content: string = activePromptTemplate.content;
     const regex = /%var:[^ ,.?!\n]+|(%var:[^ ,.?!\n]+[ ,.?!\n])/g; // Regular expression to match %var: followed by any non-space characters
     const m: any[] = [...content.matchAll(regex)];
-    const resArr: string[] = [];
+    const resArr: { v: string; i?: boolean }[] = [];
     // if (m && m.length > 0 && activePromptTemplate.inputs.length > 0) {
     let i = 0;
     while (m.length > 0) {
-      resArr.push(content.substring(i, m[0].index));
+      resArr.push({ v: content.substring(i, m[0].index), i: false });
       i = m[0].index + m[0][0].length;
-      resArr.push(content.substring(m[0].index, i));
+      resArr.push({ v: content.substring(m[0].index, i), i: true });
       m.shift();
     }
-    resArr.push(content.substring(i));
+    resArr.push({ v: content.substring(i), i: false });
     console.log(resArr);
     setResultArray(resArr);
+    setInitResultArray(resArr);
   }, [activePromptTemplate]);
+
+  useEffect(() => {
+    if (initResultArray && initResultArray.length > 0) {
+      setResultArray([
+        ...initResultArray.map((x: { v: string; i?: boolean }) => {
+          console.log({
+            v:
+              inputValues?.get(x.v) ||
+              // (inputValues?.get(x.v) &&
+                // "%var:" + inputValues?.get(x.v)?.slice(1, -1)) ||
+              x.v,
+            i: x.i,
+          });
+          return {
+            v:
+            inputValues?.get(x.v) ||
+              // (inputValues?.get(x.v) &&
+              //   "%var:" + inputValues?.get(x.v)?.slice(1, -1)) ||
+              x.v,
+            i: x.i,
+          };
+        }),
+      ]);
+    }
+  }, [inputValues]);
 
   function triggerResize() {
     if (expand && commandRef && commandRef.current) {
@@ -76,7 +108,7 @@ export default function CommandTextInput({
       </button>
       <div
         ref={commandRef}
-        className="flex w-full flex-wrap gap-5 px-5 text-xs overflow-y-auto"
+        className="flex w-full flex-wrap gap-5 overflow-y-auto px-5 text-xs"
       >
         <div
           style={{ wordWrap: "break-word" }}
@@ -84,13 +116,13 @@ export default function CommandTextInput({
         >
           {resultArray.map((x, i) => (
             <React.Fragment key={"prompt-input-" + i}>
-              {activePromptTemplate.inputs.includes(x) ? (
+              {x.i ? (
                 <span
                   suppressContentEditableWarning
-                  onInput={(e) => {
+                  onBlur={(e) => {
                     setInputValues((prev) => {
                       const x2 = new Map<string, string>(prev);
-                      x2?.set(x, (e.target as any).textContent);
+                      x2?.set( initResultArray[i].v, (e.target as any).textContent);
                       console.log([...x2]);
                       return x2;
                     });
@@ -98,10 +130,10 @@ export default function CommandTextInput({
                   contentEditable={true}
                   className="mx-1 rounded-md bg-white/10 px-1 py-0.5 underline"
                 >
-                  {"<" + x.substring(5) + ">"}
+                  {x.v}
                 </span>
               ) : (
-                <span>{x}</span>
+                <span>{x.v}</span>
               )}
             </React.Fragment>
           ))}
