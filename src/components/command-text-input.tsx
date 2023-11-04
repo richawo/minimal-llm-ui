@@ -51,6 +51,7 @@ export default function CommandTextInput({
             key={x}
           >
             {/* <div className="font-bold h-4 text-white/50">{x}:</div> */}
+            {/* TODO: INSERT THE TEXT WITH THE VARS TO BE REPLACED??? (STYLED) */}
             <ExpandingTextInput
               className="p-2 max-h-[150px]"
               onChange={(e) => {
