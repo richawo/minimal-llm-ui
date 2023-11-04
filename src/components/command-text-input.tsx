@@ -18,7 +18,8 @@ export default function CommandTextInput({
   const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
   const [commandValues, setCommandValues] = useState<any>(); //base it on active prompt template
   const [resultArray, setResultArray] = useState<string[]>([]);
-  const [newPrompt, setNewPrompt] = useState<string[]>("");
+  // const [newPrompt, setNewPrompt] = useState<string>("");
+  const [inputValues, setInputValues] = useState<Map<string, string>>();
   const commandRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,7 +74,21 @@ export default function CommandTextInput({
           {resultArray.map((x, i) => (
             <React.Fragment key={"prompt-input-" + i}>
               {activePromptTemplate.inputs.includes(x) ? (
-                <span contentEditable={true} className="bg-white/10 rounded-md px-1 py-0.5 underline">{'[' + x.substring(5) + ']'}</span>
+                <span
+                  suppressContentEditableWarning
+                  onInput={(e) => {
+                    setInputValues((prev) => {
+                      const x2 = new Map<string, string>(prev);
+                      x2?.set(x, (e.target as any).textContent);
+                      console.log([...x2]);
+                      return x2;
+                    });
+                  }}
+                  contentEditable={true}
+                  className="mx-1 rounded-md bg-white/10 px-1 py-0.5 underline"
+                >
+                  {"<" + x.substring(5) + ">"}
+                </span>
               ) : (
                 <span>{x}</span>
               )}
