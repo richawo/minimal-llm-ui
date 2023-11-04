@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/utils/cn";
 import React, { useEffect, useRef } from "react";
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
   value: string;
   placeholder: string;
   expand?: boolean;
+  className?: string;
 };
 
 export default function ExpandingTextInput({
@@ -15,9 +17,9 @@ export default function ExpandingTextInput({
   onKeyDown,
   value,
   placeholder,
-  expand = true
+  expand = true,
+  className,
 }: Props) {
-
   useEffect(() => {
     if (expand && textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "inherit";
@@ -36,9 +38,12 @@ export default function ExpandingTextInput({
       onChange={onChange}
       onKeyDown={onKeyDown}
       rows={1}
-      className="flex max-h-[200px] w-full resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex cursor-text"
+      className={cn(
+        "flex max-h-[200px] w-full cursor-text resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex",
+        className,
+      )}
       placeholder={placeholder}
-      value={value} 
+      value={value}
     ></textarea>
   );
 }
