@@ -1,24 +1,41 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { RightChevron } from "./icons/right-chevron";
 import { usePrompts } from "@/app/context/PromptContext";
+import { useEffect, useRef, useState } from "react";
 import ExpandingTextInput from "./expanding-text-input";
+import { RightChevron } from "./icons/right-chevron";
 
 type Props = {
-  value: string;
   placeholder: string;
   expand?: boolean;
 };
 
 export default function CommandTextInput({
-  value,
   placeholder,
   expand = true,
 }: Props) {
   const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
   const [commandValues, setCommandValues] = useState<any>(); //base it on active prompt template
   const commandRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    console.log(activePromptTemplate);
+    const inputs = [...activePromptTemplate?.inputs];
+    const content: string = activePromptTemplate.content;
+    const regex = /%var:[^ ,.?!\n]+|(%var:[^ ,.?!\n]+[ ,.?!\n])/g; // Regular expression to match %var: followed by any non-space characters
+    const m: any[] = [...content.matchAll(regex)];
+    const resultArray: string[] = [];
+    // if (m && m.length > 0 && activePromptTemplate.inputs.length > 0) {
+    let i = 0;
+    while (m.length > 0) {
+      resultArray.push(content.substring(i, m[0].index));
+      i = m[0].index + m[0][0].length;
+      resultArray.push(content.substring(m[0].index, i));
+      m.shift();
+    }
+    resultArray.push(content.substring(i));
+    console.log(resultArray);
+  }, [activePromptTemplate]);
 
   function triggerResize() {
     if (expand && commandRef && commandRef.current) {
@@ -53,14 +70,14 @@ export default function CommandTextInput({
             {/* <div className="font-bold h-4 text-white/50">{x}:</div> */}
             {/* TODO: INSERT THE TEXT WITH THE VARS TO BE REPLACED??? (STYLED) */}
             <ExpandingTextInput
-              className="p-2 max-h-[150px]"
+              className="max-h-[150px] p-2"
               onChange={(e) => {
                 triggerResize;
                 // find the command in the list based on the input (x) and then replace (use something like {input_key: value})
                 if (e.target.value != "\n")
                   setCommandValues({ ...commandValues, [x]: e.target.value });
               }}
-              value={commandValues?.[x] || "" as string}
+              value={commandValues?.[x] || ("" as string)}
               placeholder={x.slice(5) + ":"}
             ></ExpandingTextInput>
           </span>

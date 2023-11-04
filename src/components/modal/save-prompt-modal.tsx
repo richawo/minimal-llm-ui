@@ -33,7 +33,7 @@ export default function SavePromptModal() {
     const regex = /%var:[^ ,.?!\n]+|(%var:[^ ,.?!\n]+[ ,.?!\n])/g; // Regular expression to match %var: followed by any non-space characters
 
     const arr: string[] = [];
-    const matched = value.matchAll(regex);
+    const matched = [...value.matchAll(regex)];
     (matched as any).forEach((x: any) => {
       if (!arr.includes(x[0])) arr.push(x[0]);
     });

@@ -60,7 +60,7 @@ export default function Home() {
     fetch("http://localhost:11434/api/tags")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setAvailableModels(data.models);
 
         // get initial model from local storage
@@ -102,7 +102,7 @@ export default function Home() {
         "Content-Type": "application/json",
       },
     }).then((response) => {
-      console.log(response),
+      // console.log(response),
         response.json().then((data) => setConversations(data));
     });
   }
@@ -154,7 +154,7 @@ export default function Home() {
     let name = activeConversation;
     if (name == "") {
       name = (await getName(newPrompt)).trim();
-      console.log(name.trim());
+      // console.log(name.trim());
       setActiveConversation(name.trim());
     }
 
@@ -229,7 +229,7 @@ export default function Home() {
       messages.findIndex((m) => m.id == activeMsg.id) -
       (activeMsg.type == "human" ? 0 : 1);
     let filtered = messages.filter((m, i) => index >= i);
-    console.log("filtered", filtered);
+    // console.log("filtered", filtered);
 
     setMessages(() => filtered);
     // useEffect on change here if the last value was a human message?
@@ -449,7 +449,6 @@ export default function Home() {
             {activePromptTemplate ? (
               <>
                 <CommandTextInput
-                  value={newPrompt}
                   placeholder="Send a message"
                 />
               </>
@@ -471,7 +470,7 @@ export default function Home() {
                     e.key === "Enter" &&
                     (e.metaKey || !e.shiftKey || !e.altKey)
                   ) {
-                    console.log(e);
+                    // console.log(e);
                   }
                 }}
                 value={newPrompt}

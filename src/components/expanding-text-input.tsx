@@ -20,6 +20,7 @@ export default function ExpandingTextInput({
   expand = true,
   className,
 }: Props) {
+  
   useEffect(() => {
     if (expand && textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "inherit";
