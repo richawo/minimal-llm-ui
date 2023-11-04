@@ -4,6 +4,7 @@ import { usePrompts } from "@/app/context/PromptContext";
 import { useEffect, useRef, useState } from "react";
 import ExpandingTextInput from "./expanding-text-input";
 import { RightChevron } from "./icons/right-chevron";
+import React from "react";
 
 type Props = {
   placeholder: string;
@@ -16,6 +17,8 @@ export default function CommandTextInput({
 }: Props) {
   const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
   const [commandValues, setCommandValues] = useState<any>(); //base it on active prompt template
+  const [resultArray, setResultArray] = useState<string[]>([]);
+  const [newPrompt, setNewPrompt] = useState<string[]>("");
   const commandRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,17 +27,18 @@ export default function CommandTextInput({
     const content: string = activePromptTemplate.content;
     const regex = /%var:[^ ,.?!\n]+|(%var:[^ ,.?!\n]+[ ,.?!\n])/g; // Regular expression to match %var: followed by any non-space characters
     const m: any[] = [...content.matchAll(regex)];
-    const resultArray: string[] = [];
+    const resArr: string[] = [];
     // if (m && m.length > 0 && activePromptTemplate.inputs.length > 0) {
     let i = 0;
     while (m.length > 0) {
-      resultArray.push(content.substring(i, m[0].index));
+      resArr.push(content.substring(i, m[0].index));
       i = m[0].index + m[0][0].length;
-      resultArray.push(content.substring(m[0].index, i));
+      resArr.push(content.substring(m[0].index, i));
       m.shift();
     }
-    resultArray.push(content.substring(i));
-    console.log(resultArray);
+    resArr.push(content.substring(i));
+    console.log(resArr);
+    setResultArray(resArr);
   }, [activePromptTemplate]);
 
   function triggerResize() {
@@ -62,13 +66,27 @@ export default function CommandTextInput({
         ref={commandRef}
         className="flex w-full flex-wrap gap-5 px-5 text-xs"
       >
-        {activePromptTemplate.inputs.map((x: string) => (
+        <div
+          style={{ wordWrap: "break-word" }}
+          className="list-item list-none whitespace-pre-line text-white"
+        >
+          {resultArray.map((x, i) => (
+            <React.Fragment key={"prompt-input-" + i}>
+              {activePromptTemplate.inputs.includes(x) ? (
+                <span contentEditable={true} className="bg-white/10 rounded-md px-1 py-0.5 underline">{'[' + x.substring(5) + ']'}</span>
+              ) : (
+                <span>{x}</span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+        {/* {activePromptTemplate.inputs.map((x: string) => (
           <span
             className="flex min-w-[200px] grow items-center gap-x-2 rounded-md px-2 py-1"
             key={x}
           >
-            {/* <div className="font-bold h-4 text-white/50">{x}:</div> */}
-            {/* TODO: INSERT THE TEXT WITH THE VARS TO BE REPLACED??? (STYLED) */}
+            <div className="font-bold h-4 text-white/50">{x}:</div>
+            TODO: INSERT THE TEXT WITH THE VARS TO BE REPLACED??? (STYLED)
             <ExpandingTextInput
               className="max-h-[150px] p-2"
               onChange={(e) => {
@@ -81,7 +99,7 @@ export default function CommandTextInput({
               placeholder={x.slice(5) + ":"}
             ></ExpandingTextInput>
           </span>
-        ))}
+        ))} */}
       </div>
     </div>
   );
