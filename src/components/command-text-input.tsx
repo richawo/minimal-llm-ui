@@ -5,15 +5,18 @@ import { useEffect, useRef, useState } from "react";
 import ExpandingTextInput from "./expanding-text-input";
 import { RightChevron } from "./icons/right-chevron";
 import React from "react";
+import { on } from "events";
 
 type Props = {
-  placeholder: string;
   expand?: boolean;
+  onChange?: (e: any) => void;
+  onKeyDown?: (e: any) => void;
 };
 
 export default function CommandTextInput({
-  placeholder,
   expand = true,
+  onChange,
+  onKeyDown,
 }: Props) {
   const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
   const [resultArray, setResultArray] = useState<{ v: string; i?: boolean }[]>(
@@ -33,7 +36,7 @@ export default function CommandTextInput({
       const im = new Map<string, string>([
         ...activePromptTemplate.inputs.map((x: string) => [
           x,
-          x
+          x,
           // "<" + x.substring(5) + ">",
         ]),
       ]);
@@ -67,13 +70,13 @@ export default function CommandTextInput({
             v:
               inputValues?.get(x.v) ||
               // (inputValues?.get(x.v) &&
-                // "%var:" + inputValues?.get(x.v)?.slice(1, -1)) ||
+              // "%var:" + inputValues?.get(x.v)?.slice(1, -1)) ||
               x.v,
             i: x.i,
           });
           return {
             v:
-            inputValues?.get(x.v) ||
+              inputValues?.get(x.v) ||
               // (inputValues?.get(x.v) &&
               //   "%var:" + inputValues?.get(x.v)?.slice(1, -1)) ||
               x.v,
@@ -95,10 +98,7 @@ export default function CommandTextInput({
   }
 
   return (
-    <div
-      className="flex max-h-[200px] w-full cursor-text resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
-      placeholder={placeholder}
-    >
+    <div className="flex max-h-[200px] w-full cursor-text resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
       <button
         className="cursor-pointer rounded-md border border-white/10 px-0.5"
         onClick={() => setActivePromptTemplate(undefined)}
@@ -121,12 +121,31 @@ export default function CommandTextInput({
                   onBlur={(e) => {
                     setInputValues((prev) => {
                       const x2 = new Map<string, string>(prev);
-                      x2?.set( initResultArray[i].v, (e.target as any).textContent);
+                      x2?.set(
+                        initResultArray[i].v,
+                        (e.target as any).textContent,
+                      );
                       console.log([...x2]);
                       return x2;
                     });
                   }}
-                  
+                  onInput={(e) =>
+                    inputValues?.set(
+                      initResultArray[i].v,
+                      (e.target as any).textContent,
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    onKeyDown?.({
+                      e,
+                      input: [
+                        ...initResultArray.map(
+                          (x: { v: string; i?: boolean }) =>
+                            inputValues?.get(x.v) || x.v,
+                        ),
+                      ].join(""),
+                    });
+                  }}
                   contentEditable={true}
                   className="mx-1 rounded-md bg-white/10 px-1 py-0.5 underline"
                 >

@@ -22,7 +22,7 @@ import CommandTextInput from "@/components/command-text-input";
 
 export default function Home() {
   const { setModalConfig } = useModal();
-  const { activePromptTemplate } = usePrompts();
+  const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
   const [newPrompt, setNewPrompt] = useState("");
   const [messages, setMessages] = useState<
     {
@@ -103,19 +103,19 @@ export default function Home() {
       },
     }).then((response) => {
       // console.log(response),
-        response.json().then((data) => setConversations(data));
+      response.json().then((data) => setConversations(data));
     });
   }
 
-  async function triggerPrompt() {
+  async function triggerPrompt(input: string = newPrompt) {
     if (!ollama) return;
     scrollToBottom();
-    if (messages.length == 0) getName(newPrompt);
+    if (messages.length == 0) getName(input);
     const msg = {
       type: "human",
       id: generateRandomString(8),
       timestamp: Date.now(),
-      content: newPrompt,
+      content: input,
     };
     const model = activeModel;
     let streamedText = "";
@@ -129,6 +129,7 @@ export default function Home() {
       ),
     );
     setNewPrompt("");
+    setActivePromptTemplate(undefined);
     let updatedMessages = [...msgCache];
     let c = 0;
     for await (const chunk of stream) {
@@ -449,7 +450,17 @@ export default function Home() {
             {activePromptTemplate ? (
               <>
                 <CommandTextInput
-                  placeholder="Send a message"
+                  onKeyDown={(x) => {
+                    if (
+                     x.e.key === "Enter" &&
+                      !x.e.metaKey &&
+                      !x.e.shiftKey &&
+                      !x.e.altKey &&
+                      newPrompt !== ""
+                    ) {
+                      triggerPrompt(x.input);
+                    }
+                  }}
                 />
               </>
             ) : (
