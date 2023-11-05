@@ -1,22 +1,28 @@
 "use client";
-import generateRandomString from "@/utils/generateRandomString";
+import AppNavbar from "@/components/app-navbar";
+import CommandMenu from "@/components/command-menu";
+import ExpandingTextInput from "@/components/expanding-text-input";
+import { CopyIcon } from "@/components/icons/copy-icon";
+import { RefreshIcon } from "@/components/icons/refresh-icon";
+import { RightChevron } from "@/components/icons/right-chevron";
+import { SaveIcon } from "@/components/icons/save-icon";
+import { TrashIcon } from "@/components/icons/trash-icon";
+import { MenuToggle } from "@/components/menu-toggle";
 import { cn } from "@/utils/cn";
+import generateRandomString from "@/utils/generateRandomString";
+import { motion, useCycle } from "framer-motion";
 import { ChatOllama } from "langchain/chat_models/ollama";
 import { AIMessage, HumanMessage } from "langchain/schema";
-import React, { useRef } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { RefreshIcon } from "@/components/icons/refresh-icon";
-import { CopyIcon } from "@/components/icons/copy-icon";
-import { TrashIcon } from "@/components/icons/trash-icon";
-import AppNavbar from "@/components/app-navbar";
-import { MenuToggle } from "@/components/menu-toggle";
-import { motion, useCycle } from "framer-motion";
-import { RightChevron } from "@/components/icons/right-chevron";
-import { Interface } from "readline";
+import { AppModal, useModal } from "./context/ModalContext";
+import { usePrompts } from "./context/PromptContext";
+import CommandTextInput from "@/components/command-text-input";
 
 export default function Home() {
+  const { setModalConfig } = useModal();
+  const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
   const [newPrompt, setNewPrompt] = useState("");
   const [messages, setMessages] = useState<
     {
@@ -39,16 +45,6 @@ export default function Home() {
   const msgContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = "inherit";
-      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
-      textareaRef.current.style.overflow = `${
-        textareaRef?.current?.scrollHeight > 200 ? "auto" : "hidden"
-      }`;
-    }
-  }, [newPrompt]);
-
-  useEffect(() => {
     scrollToBottom();
   }, [activeConversation]);
 
@@ -64,7 +60,7 @@ export default function Home() {
     fetch("http://localhost:11434/api/tags")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setAvailableModels(data.models);
 
         // get initial model from local storage
@@ -106,20 +102,20 @@ export default function Home() {
         "Content-Type": "application/json",
       },
     }).then((response) => {
-      console.log(response),
-        response.json().then((data) => setConversations(data));
+      // console.log(response),
+      response.json().then((data) => setConversations(data));
     });
   }
 
-  async function triggerPrompt() {
+  async function triggerPrompt(input: string = newPrompt) {
     if (!ollama) return;
     scrollToBottom();
-    if (messages.length == 0) getName(newPrompt);
+    if (messages.length == 0) getName(input);
     const msg = {
       type: "human",
       id: generateRandomString(8),
       timestamp: Date.now(),
-      content: newPrompt,
+      content: input,
     };
     const model = activeModel;
     let streamedText = "";
@@ -133,6 +129,7 @@ export default function Home() {
       ),
     );
     setNewPrompt("");
+    setActivePromptTemplate(undefined);
     let updatedMessages = [...msgCache];
     let c = 0;
     for await (const chunk of stream) {
@@ -158,7 +155,7 @@ export default function Home() {
     let name = activeConversation;
     if (name == "") {
       name = (await getName(newPrompt)).trim();
-      console.log(name.trim());
+      // console.log(name.trim());
       setActiveConversation(name.trim());
     }
 
@@ -233,7 +230,7 @@ export default function Home() {
       messages.findIndex((m) => m.id == activeMsg.id) -
       (activeMsg.type == "human" ? 0 : 1);
     let filtered = messages.filter((m, i) => index >= i);
-    console.log("filtered", filtered);
+    // console.log("filtered", filtered);
 
     setMessages(() => filtered);
     // useEffect on change here if the last value was a human message?
@@ -405,21 +402,32 @@ export default function Home() {
                       { "mr-auto": msg.type == "ai" },
                     )}
                   >
+                    {msg.type == "human" && (
+                      <SaveIcon
+                        onClick={() => {
+                          setModalConfig({
+                            modal: AppModal.SAVE_PROMPT,
+                            data: msg,
+                          });
+                        }}
+                        className="h-4 w-4 fill-white/50 hover:fill-white/90"
+                      />
+                    )}
                     <RefreshIcon
                       onClick={() => refreshMessage(msg)}
-                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                      className="h-4 w-4 fill-white/50 hover:fill-white/90"
                     />
                     <CopyIcon
                       onClick={() => {
                         navigator.clipboard.writeText(msg.content);
                       }}
-                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                      className="h-4 w-4 fill-white/50 hover:fill-white/90"
                     />
                     <TrashIcon
                       onClick={() => {
                         deleteMessage(msg);
                       }}
-                      className="h-4 w-4 fill-white/50 hover:fill-white/75"
+                      className="h-4 w-4 fill-white/50 hover:fill-white/90"
                     />
                   </div>
                 </div>
@@ -427,33 +435,60 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md px-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
-          <textarea
-            ref={textareaRef}
-            onChange={(e) => {
-              if (e.target.value != "\n") setNewPrompt(e.target.value);
-            }}
-            onKeyDown={(e) => {
-              if (
-                e.key === "Enter" &&
-                !e.metaKey &&
-                !e.shiftKey &&
-                !e.altKey &&
-                newPrompt !== ""
-              ) {
-                triggerPrompt();
-              } else if (
-                e.key === "Enter" &&
-                (e.metaKey || !e.shiftKey || !e.altKey)
-              ) {
-                console.log(e);
-              }
-            }}
-            rows={1}
-            className="flex max-h-[200px] w-full resize-none appearance-none rounded-md border border-[#191919] bg-[#0a0a0a]/80 px-6 py-4 text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex"
-            placeholder="Send a message"
-            value={newPrompt}
-          ></textarea>
+
+        <div className="flex flex-col gap-y-2 px-4">
+          <CommandMenu
+            showMenu={
+              !activePromptTemplate &&
+              !!newPrompt &&
+              newPrompt.startsWith("/") &&
+              newPrompt == "/" + newPrompt.replace(/[^a-zA-Z0-9_]/g, "")
+            }
+          />
+          {/* TODO: Include Active Prompt Template when selected above so we know what's beind done or insert placeholder input as it's being populated */}
+          <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
+            {activePromptTemplate ? (
+              <>
+                <CommandTextInput
+                  onKeyDown={(x) => {
+                    if (
+                     x.e.key === "Enter" &&
+                      !x.e.metaKey &&
+                      !x.e.shiftKey &&
+                      !x.e.altKey &&
+                      newPrompt !== ""
+                    ) {
+                      triggerPrompt(x.input);
+                    }
+                  }}
+                />
+              </>
+            ) : (
+              <ExpandingTextInput
+                onChange={(e: any) => {
+                  if (e.target.value != "\n") setNewPrompt(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === "Enter" &&
+                    !e.metaKey &&
+                    !e.shiftKey &&
+                    !e.altKey &&
+                    newPrompt !== ""
+                  ) {
+                    triggerPrompt();
+                  } else if (
+                    e.key === "Enter" &&
+                    (e.metaKey || !e.shiftKey || !e.altKey)
+                  ) {
+                    // console.log(e);
+                  }
+                }}
+                value={newPrompt}
+                placeholder="Send a message"
+              />
+            )}
+          </div>
         </div>
       </div>
     </main>
