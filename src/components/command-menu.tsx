@@ -19,6 +19,7 @@ export default function CommandMenu({ showMenu }: Props) {
           </div>
           {promptTemplate.map(
             (t: { name: string; content: string; inputs: string[] }) => (
+              // TODO: ADD BUTTONS THAT LET YOU DELETE | EDIT TEMPLATES
               <motion.div
                 onClick={() => setActivePromptTemplate(t)}
                 initial={{ opacity: 0, height: 0 }}
