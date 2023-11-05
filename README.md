@@ -38,6 +38,8 @@ To-do
 - Summarise conversations
 - Incorporate visualisations
 - Convert to desktop app so that it can be more powerful
+- Command menu should filter based on first letters
+- Command menue should allow for saving new prompt templates directly from there
 
 Troubleshooting
 ---------------
