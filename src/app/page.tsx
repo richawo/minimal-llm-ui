@@ -19,6 +19,7 @@ import remarkGfm from "remark-gfm";
 import { AppModal, useModal } from "./context/ModalContext";
 import { usePrompts } from "./context/PromptContext";
 import CommandTextInput from "@/components/command-text-input";
+import Sidebar from "@/components/sidebar";
 
 export default function Home() {
   const { setModalConfig } = useModal();
@@ -299,52 +300,16 @@ export default function Home() {
 
   return (
     <main className="relative flex max-h-screen min-h-screen w-screen max-w-[100vw] items-center justify-between overflow-hidden">
-      <motion.div
-        className={cn("absolute left-0 top-0 z-50 p-3")}
-        initial={false}
-        animate={menuState ? "open" : "closed"}
-      >
-        <MenuToggle toggle={() => toggleMenuState()} />
-      </motion.div>
-      <motion.div
-        layout
-        className={cn(
-          "flex max-h-screen min-h-screen flex-col overflow-x-visible border-r py-12",
-          { "w-80 min-w-[20rem] border-white/10": menuState },
-          { "-z-0 w-0 border-white/0": !menuState },
-        )}
-      >
-        {menuState && (
-          <motion.button
-            onClick={startNewChat}
-            whileTap={{ backgroundColor: "rgba(255,255,255,0.8)" }}
-            whileHover={{ backgroundColor: "rgba(255,255,255,1)" }}
-            className="flex cursor-pointer items-center justify-between bg-white/80 px-4 py-2 text-black"
-          >
-            <span className="text-xs font-semibold">New Chat</span>
-            <RightChevron className="h-4 w-4 fill-black" />
-          </motion.button>
-        )}
-        {menuState &&
-          conversations.map((c) => (
-            <div
-              className="flex cursor-pointer items-center justify-between px-4 py-2 hover:bg-white/5"
-              key={c.title}
-              onClick={() => loadConvo(c)}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-xs">{c.title}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CopyIcon className="h-4 w-4 fill-white/50 hover:fill-white/75" />
-                <TrashIcon
-                  onClick={() => deleteConvo(c)}
-                  className="h-4 w-4 fill-white/50 hover:fill-white/75"
-                />
-              </div>
-            </div>
-          ))}
-      </motion.div>
+      <Sidebar
+        activeConversation={activeConversation}
+        conversations={conversations}
+        menuState={menuState}
+        setActiveConversation={setActiveConversation}
+        setConversations={setConversations}
+        setMessages={setMessages}
+        setNewPrompt={setNewPrompt}
+        toggleMenuState={toggleMenuState}
+      />
       <div
         className="flex max-h-screen min-h-screen w-full flex-col"
         style={{ maxWidth: "calc(100vw - " + (menuState ? 20 : 0) + "rem)" }}
@@ -453,7 +418,7 @@ export default function Home() {
                 <CommandTextInput
                   onKeyDown={(x) => {
                     if (
-                     x.e.key === "Enter" &&
+                      x.e.key === "Enter" &&
                       !x.e.metaKey &&
                       !x.e.shiftKey &&
                       !x.e.altKey &&
