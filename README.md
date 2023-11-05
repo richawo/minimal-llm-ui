@@ -38,7 +38,6 @@ To-do
 - Summarise conversations
 - Incorporate visualisations
 - Convert to desktop app so that it can be more powerful
-- Command menu should filter based on first letters
 - Command menu should allow for saving new prompt templates directly from there
 - Command menu should let you edit + delete existing prompts
 
