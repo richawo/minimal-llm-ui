@@ -16,7 +16,6 @@ export default function CommandTextInput({
   expand = true,
 }: Props) {
   const { activePromptTemplate, setActivePromptTemplate } = usePrompts();
-  const [commandValues, setCommandValues] = useState<any>(); //base it on active prompt template
   const [resultArray, setResultArray] = useState<{ v: string; i?: boolean }[]>(
     [],
   );
@@ -115,7 +114,7 @@ export default function CommandTextInput({
           className="list-item list-none whitespace-pre-line text-white"
         >
           {resultArray.map((x, i) => (
-            <React.Fragment key={"prompt-input-" + i}>
+            <React.Fragment key={"prompt-input-" + i + initResultArray[i].v}>
               {x.i ? (
                 <span
                   suppressContentEditableWarning
@@ -127,6 +126,7 @@ export default function CommandTextInput({
                       return x2;
                     });
                   }}
+                  
                   contentEditable={true}
                   className="mx-1 rounded-md bg-white/10 px-1 py-0.5 underline"
                 >
@@ -138,26 +138,6 @@ export default function CommandTextInput({
             </React.Fragment>
           ))}
         </div>
-        {/* {activePromptTemplate.inputs.map((x: string) => (
-          <span
-            className="flex min-w-[200px] grow items-center gap-x-2 rounded-md px-2 py-1"
-            key={x}
-          >
-            <div className="font-bold h-4 text-white/50">{x}:</div>
-            TODO: INSERT THE TEXT WITH THE VARS TO BE REPLACED??? (STYLED)
-            <ExpandingTextInput
-              className="max-h-[150px] p-2"
-              onChange={(e) => {
-                triggerResize;
-                // find the command in the list based on the input (x) and then replace (use something like {input_key: value})
-                if (e.target.value != "\n")
-                  setCommandValues({ ...commandValues, [x]: e.target.value });
-              }}
-              value={commandValues?.[x] || ("" as string)}
-              placeholder={x.slice(5) + ":"}
-            ></ExpandingTextInput>
-          </span>
-        ))} */}
       </div>
     </div>
   );
