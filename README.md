@@ -38,7 +38,6 @@ To-do
 - Summarise conversations
 - Incorporate visualisations
 - Convert to desktop app so that it can be more powerful
-- Allow for prompt savings + shortcuts
 
 Troubleshooting
 ---------------
