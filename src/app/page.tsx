@@ -444,6 +444,7 @@ export default function Home() {
               newPrompt.startsWith("/") &&
               newPrompt == "/" + newPrompt.replace(/[^a-zA-Z0-9_]/g, "")
             }
+            filterString={newPrompt.substring(1)}
           />
           {/* TODO: Include Active Prompt Template when selected above so we know what's beind done or insert placeholder input as it's being populated */}
           <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
