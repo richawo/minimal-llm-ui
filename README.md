@@ -15,7 +15,7 @@ Features
 * Model Toggling: Switch between different LLMs easily (even mid conversation), allowing you to experiment and explore different models for various tasks.
 * Memory-based Context Storage: Keep track of context in memory, ensuring smooth interactions even when switching between models.
 * Conversation History: Save conversations in a local database, allowing you revisit them at a later date.
-* Prompt Templating: Create parameter driven prompt templates to improve reuse. 
+* Prompt Templating: Create parameter driven prompt templates to improve reuse.
 
 Technical Details
 ----------------
