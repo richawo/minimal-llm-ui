@@ -14,7 +14,8 @@ Features
 * Chat with Local Language Models (LLMs): Interact with your LLMs in real-time through our user-friendly interface.
 * Model Toggling: Switch between different LLMs easily (even mid conversation), allowing you to experiment and explore different models for various tasks.
 * Memory-based Context Storage: Keep track of context in memory, ensuring smooth interactions even when switching between models.
-* Storing conversation history.
+* Conversation History: Save conversations in a local database, allowing you revisit them at a later date.
+* Prompt Templating: Create parameter driven prompt templates to improve reuse. 
 
 Technical Details
 ----------------
