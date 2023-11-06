@@ -1,7 +1,7 @@
 "use client";
 
 import { usePrompts } from "@/app/context/PromptContext";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 
 type Props = {
   showMenu: boolean;
