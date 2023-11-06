@@ -49,12 +49,12 @@ export default function CommandMenu({ showMenu, filterString }: Props) {
                           ? t.content
                           : t.content.slice(0, 45) + "..." + t.content.slice(-45)}
                       </motion.div>
-                    )}
-                  </>
-                ),
-              )}
-            </motion.div>
-          )}
-        </>
-      );
+                  )}
+                </>
+              ),
+            )}
+          </motion.div>
+        )}
+      </>
+    );
     }
