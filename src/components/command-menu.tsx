@@ -20,7 +20,7 @@ export default function CommandMenu({ showMenu, filterString }: Props) {
           </div>
             {promptTemplate.map(
               (t: { name: string; content: string; inputs: string[] }) => (
-                // TODO: ADD BUTTONS THAT LET YOU DELETE | EDIT TEMPLATES
+                // Code comment removed
                 <>
                   {t.name.toLowerCase().indexOf(filterString) > -1 && (
                     <motion.div
