@@ -1,4 +1,4 @@
-"use client";
+// Line removed
 import { usePrompts } from "@/app/context/PromptContext";
 import { motion } from "framer-motion";
 
