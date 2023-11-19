@@ -30,7 +30,32 @@ Getting Started
 1. Download and run Ollama on your machine with `ollama serve` or `ollama run <model-name>` (it will run at: http://localhost:11434/)
 2. Open a new terminal and navigate to the root of this project.
 3. Install the dependencies `npm install` in your terminal.
-4. Start the tool by running `npm run dev` (it should be available in your web browser at `http://localhost:3000`)
+
+4. Also check whether your node by doing:  
+```
+node -v
+```
+If it is less than 14.0.1.
+You can do this to update it:
+- Install n using npm (Node.js package manager):
+
+ - bash:
+
+```
+npm install -g n
+```
+Use n to install a specific Node.js version:
+bash:
+```
+n 20.0.9
+```
+Verify the Node.js version:
+- bash
+```
+node -v
+```
+
+5. Start the tool by running `npm run dev` (it should be available in your web browser at `http://localhost:3000`)
 
 To-do
 ---------------
