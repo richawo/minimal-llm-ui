@@ -31,29 +31,26 @@ Getting Started
 2. Open a new terminal and navigate to the root of this project.
 3. Install the dependencies `npm install` in your terminal.
 
-4. Also check whether your node by doing:  
-```
-node -v
-```
-If it is less than 14.0.1.
-You can do this to update it:
-- Install n using npm (Node.js package manager):
-
- - bash:
-
-```
-npm install -g n
-```
-Use n to install a specific Node.js version:
-bash:
-```
-n 20.0.9
-```
-Verify the Node.js version:
-- bash
-```
-node -v
-```
+4. Also check your node version by doing:  
+  ```
+  node -v
+  ```
+  If it is less than 14.0.1, you can update it:
+  - Install n using npm (Node.js package manager):
+    - bash:
+      ```
+      npm install -g n
+      ```
+  Use n to install a specific Node.js version:
+  bash:
+  ```
+  n 20.0.9
+  ```
+  Verify the Node.js version:
+  - bash
+    ```
+    node -v
+    ```
 
 5. Start the tool by running `npm run dev` (it should be available in your web browser at `http://localhost:3000`)
 
