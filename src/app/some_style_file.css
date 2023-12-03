@@ -1,0 +1,5 @@
+.message-container {
+    line-height: 1.5;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
