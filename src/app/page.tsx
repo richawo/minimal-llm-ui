@@ -326,7 +326,7 @@ export default function Home() {
           <div className="flex w-full flex-1 flex-col items-center justify-end gap-y-4 overflow-scroll whitespace-break-spaces">
             <div
               ref={msgContainerRef}
-              className="block h-fit w-full flex-col items-center justify-center gap-y-1 overflow-scroll rounded-md p-2"
+              className="block h-fit w-full flex-col items-center justify-center gap-y-1 overflow-scroll rounded-md p-2 whitespace-normal"
             >
               {messages.map((msg) => (
                 <div
@@ -354,7 +354,7 @@ export default function Home() {
                     <Markdown
                       remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
                       className={
-                        "mr-auto flex w-full flex-col text-sm text-white"
+                        "mr-auto flex w-full flex-col text-sm text-white whitespace-normal"
                       }
                     >
                       {msg.content.trim()}
