@@ -4,7 +4,8 @@ Minimalistic Interface for Local Language Models (LLMs) (Powered by Ollama)
 Introduction
 ------------
 
-https://github.com/richawo/minimal-llm-ui/assets/35015261/666053ed-cba8-45a6-9a96-ff8b2b525dbd
+[![Watch the video](assets/preview.png)](https://github.com/richawo/minimal-llm-ui/assets/35015261/666053ed-cba8-45a6-9a96-ff8b2b525dbd)
+
 
 This minimalistic UI is designed to act as a simple interface for Ollama models, allowing you to chat with your models, save conversations and toggle between different ones easily. The tool is built using React, Next.js, and Tailwind CSS, with LangchainJs and Ollama providing the magic behind the scenes.
 
