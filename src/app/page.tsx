@@ -8,6 +8,7 @@ import { RightChevron } from "@/components/icons/right-chevron";
 import { SaveIcon } from "@/components/icons/save-icon";
 import { TrashIcon } from "@/components/icons/trash-icon";
 import { MenuToggle } from "@/components/menu-toggle";
+import { baseUrl } from "@/utils/constants";
 import { cn } from "@/utils/cn";
 import generateRandomString from "@/utils/generateRandomString";
 import { motion, useCycle } from "framer-motion";
@@ -58,7 +59,7 @@ export default function Home() {
   }, []);
 
   function getInitialModel() {
-    fetch("http://localhost:11434/api/tags")
+    fetch(`${baseUrl}/api/tags`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -76,7 +77,7 @@ export default function Home() {
         ) {
           setActiveModel(storedModel);
           const newOllama = new ChatOllama({
-            baseUrl: "http://localhost:11434",
+            baseUrl: baseUrl,
             model: storedModel,
           });
           setOllama(newOllama);
@@ -84,7 +85,7 @@ export default function Home() {
           // set initial model to first model in list
           setActiveModel(data.models[0]?.name);
           const initOllama = new ChatOllama({
-            baseUrl: "http://localhost:11434",
+            baseUrl: baseUrl,
             model: data.models[0]?.name,
           });
           setOllama(initOllama);
@@ -286,7 +287,7 @@ export default function Home() {
 
   function getName(input: string) {
     const nameOllama = new ChatOllama({
-      baseUrl: "http://localhost:11434",
+      baseUrl: baseUrl,
       model: "llama2",
       verbose: false,
     });

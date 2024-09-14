@@ -16,6 +16,7 @@ Features
 * Memory-based Context Storage: Keep track of context in memory, ensuring smooth interactions even when switching between models.
 * Conversation History: Save conversations in a local database, allowing you revisit them at a later date.
 * Prompt Templating: Create parameter driven prompt templates to improve reuse.
+* Custom API Endpoint: If Ollama is running on a different host/device, easily configure a custom base URL.
 
 Technical Details
 ----------------
@@ -55,7 +56,8 @@ Verify the Node.js version:
 node -v
 ```
 
-5. Start the tool by running `npm run dev` (it should be available in your web browser at `http://localhost:3000`)
+5. **Optional:** If running Ollama on a different host/device, customize the Ollama API base URL by copying `.env.example` to `.env.local` and setting the environment variable `NEXT_PUBLIC_OLLAMA_BASEURL`. If not set, the base URL will default to `http://localhost:11434`.
+6. Start the tool by running `npm run dev` (it should be available in your web browser at `http://localhost:3000`)
 
 To-do
 ---------------
