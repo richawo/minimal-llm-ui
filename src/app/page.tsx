@@ -287,7 +287,7 @@ export default function Home() {
   function getName(input: string) {
     const nameOllama = new ChatOllama({
       baseUrl: "http://localhost:11434",
-      model: "llama2",
+      model: activeModel && activeModel.trim() !== "" ? activeModel : "llama2",
       verbose: false,
     });
     return nameOllama!
