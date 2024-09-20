@@ -1,17 +1,17 @@
 "use client";
 import AppNavbar from "@/components/app-navbar";
 import CommandMenu from "@/components/command-menu";
+import CommandTextInput from "@/components/command-text-input";
 import ExpandingTextInput from "@/components/expanding-text-input";
 import { CopyIcon } from "@/components/icons/copy-icon";
 import { RefreshIcon } from "@/components/icons/refresh-icon";
-import { RightChevron } from "@/components/icons/right-chevron";
 import { SaveIcon } from "@/components/icons/save-icon";
 import { TrashIcon } from "@/components/icons/trash-icon";
-import { MenuToggle } from "@/components/menu-toggle";
-import { baseUrl } from "@/utils/constants";
+import Sidebar from "@/components/sidebar";
 import { cn } from "@/utils/cn";
+import { baseUrl } from "@/utils/constants";
 import generateRandomString from "@/utils/generateRandomString";
-import { motion, useCycle } from "framer-motion";
+import { useCycle } from "framer-motion";
 import { ChatOllama } from "langchain/chat_models/ollama";
 import { AIMessage, HumanMessage } from "langchain/schema";
 import { useEffect, useRef, useState } from "react";
@@ -19,8 +19,6 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { AppModal, useModal } from "./context/ModalContext";
 import { usePrompts } from "./context/PromptContext";
-import CommandTextInput from "@/components/command-text-input";
-import Sidebar from "@/components/sidebar";
 
 export default function Home() {
   const { setModalConfig } = useModal();
@@ -43,7 +41,6 @@ export default function Home() {
   >([]);
   const [activeConversation, setActiveConversation] = useState<string>("");
   const [menuState, toggleMenuState] = useCycle(false, true);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const msgContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -177,37 +174,6 @@ export default function Home() {
     }).then(() => getExistingConvos());
   }
 
-  function loadConvo(conversation: { title: string; filePath: string }) {
-    if (activeConversation == conversation.title) return;
-    fetch("../api/fs/get-convo-by-path", {
-      method: "POST",
-      body: JSON.stringify({
-        conversationPath: conversation.filePath,
-      }),
-    }).then((response) =>
-      response.json().then((data) => {
-        setMessages(data.messages);
-        setActiveConversation(conversation.title);
-      }),
-    );
-  }
-
-  function deleteConvo(conversation: { title: string; filePath: string }) {
-    fetch("../api/fs/delete-convo-by-path", {
-      method: "POST",
-      body: JSON.stringify({
-        conversationPath: conversation.filePath,
-      }),
-    }).then((response) => {
-      setConversations((prev) => [
-        ...conversations.filter((c) => c.filePath !== conversation.filePath),
-      ]);
-      if (activeConversation == conversation.title) {
-        loadConvo(conversations[0]);
-      }
-    });
-  }
-
   function deleteMessage(activeMsg: {
     type: string;
     id: any;
@@ -277,13 +243,6 @@ export default function Home() {
       });
     }
   };
-
-  function startNewChat() {
-    setMessages([]);
-    setActiveConversation("");
-    setNewPrompt("");
-    toggleMenuState();
-  }
 
   function getName(input: string) {
     const nameOllama = new ChatOllama({
