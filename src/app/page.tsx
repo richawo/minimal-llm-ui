@@ -279,7 +279,7 @@ export default function Home() {
   };
 
   function startNewChat() {
-    setMessages([]);
+    setMessages([ ]);
     setActiveConversation("");
     setNewPrompt("");
     toggleMenuState();
@@ -324,10 +324,14 @@ export default function Home() {
           setOllama={setOllama}
         />
         <div className="flex w-full flex-1 flex-shrink flex-col items-center justify-end gap-y-4 overflow-hidden whitespace-break-spaces">
-          <div className="flex w-full flex-1 flex-col items-center justify-end gap-y-4 overflow-scroll whitespace-break-spaces">
+          <div 
+          className="flex w-full flex-1 flex-col items-center justify-end gap-y-4 overflow-scroll whitespace-break-spaces"
+          style={{display: "overflow-y: auto;overflow-x:auto;scrollbar-width: none"}}
+          >
             <div
               ref={msgContainerRef}
               className="block h-fit w-full flex-col items-center justify-center gap-y-1 overflow-scroll rounded-md p-2"
+              style={{display: "overflow-y: auto;overflow-x:auto;scrollbar-width: none"}}
             >
               {messages.map((msg) => (
                 <div
