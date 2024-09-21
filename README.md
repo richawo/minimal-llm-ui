@@ -13,11 +13,11 @@ Features
 --------
 
 * Chat with Local Language Models (LLMs): Interact with your LLMs in real-time through our user-friendly interface.
-* Model Toggling: Switch between different LLMs easily (even mid conversation), allowing you to experiment and explore different models for various tasks.
+* Model Toggling: You can switch between different LLMs easily (even mid-conversation), allowing you to experiment and explore different models for various tasks.
 * Memory-based Context Storage: Keep track of context in memory, ensuring smooth interactions even when switching between models.
-* Conversation History: Save conversations in a local database, allowing you revisit them at a later date.
-* Prompt Templating: Create parameter driven prompt templates to improve reuse.
-* Custom API Endpoint: If Ollama is running on a different host/device, easily configure a custom base URL.
+* Conversation History: Save conversations in a local database, allowing you to revisit them later.
+* Prompt Templating: Save prompts you love by creating parameter-driven prompt templates to improve reuse
+* Custom API Endpoint: Configure a custom base URL easily if Ollama is running on a different host/device.
 
 Technical Details
 ----------------
@@ -64,10 +64,10 @@ To-do
 ---------------
 
 - Add edit message icon for user messages
+- Add image uploads for multi-modal models
 - Summarise conversations
 - Incorporate visualisations
-- Convert to desktop app so that it can be more powerful
-- Command menu should allow for saving new prompt templates directly from there
+- Convert to a desktop app so that it can be more powerful
 - Command menu should let you edit + delete existing prompts
 
 Troubleshooting
