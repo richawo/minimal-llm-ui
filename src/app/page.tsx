@@ -9,7 +9,7 @@ import { SaveIcon } from "@/components/icons/save-icon";
 import { TrashIcon } from "@/components/icons/trash-icon";
 import Sidebar from "@/components/sidebar";
 import { cn } from "@/utils/cn";
-import { baseUrl } from "@/utils/constants";
+import { baseUrl, fallbackModel } from "@/utils/constants";
 import generateRandomString from "@/utils/generateRandomString";
 import { useCycle } from "framer-motion";
 import { ChatOllama } from "langchain/chat_models/ollama";
@@ -247,7 +247,7 @@ export default function Home() {
   function getName(input: string) {
     const nameOllama = new ChatOllama({
       baseUrl: baseUrl,
-      model: activeModel && activeModel.trim() !== "" ? activeModel : "llama2",
+      model: activeModel && activeModel.trim() !== "" ? activeModel : fallbackModel,
       verbose: false,
     });
     return nameOllama!
