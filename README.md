@@ -84,4 +84,4 @@ This project is licensed under the MIT License. See `LICENSE` file for details.
 Sponsor
 -------
 
-This project is sponsored by yaps.ai - A collection of powerful local AI tools all in a single app. Dictation, screen-reading, speech generation, translations, ai meeting notes, transcription, etc... all running offline, on your machine.
+This project is sponsored by [yaps.ai](https://yaps.ai) - A collection of powerful local AI tools all in a single app. Dictation, screen-reading, speech generation, translations, ai meeting notes, transcription, etc... all running offline, on your machine.
