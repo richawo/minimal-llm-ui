@@ -4,6 +4,7 @@ import "./globals.css";
 import ModalSelector from "@/components/modal/modal-selector";
 import { ModalProvider } from "./context/ModalContext";
 import { PromptsProvider } from "./context/PromptContext";
+import { SystemInstructionProvider } from "./context/SystemInstructionContext";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <ModalProvider>
         <PromptsProvider>
-          <ModalSelector></ModalSelector>
-          <body className={montserrat.className}>{children}</body>
+          <SystemInstructionProvider>
+            <ModalSelector></ModalSelector>
+            <body className={montserrat.className}>{children}</body>
+          </SystemInstructionProvider>
         </PromptsProvider>
       </ModalProvider>
     </html>

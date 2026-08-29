@@ -10,6 +10,8 @@ export const useModal = () => {
 
 export enum AppModal {
   SAVE_PROMPT = "savePrompt",
+  ADD_SYSTEM_INSTRUCTION = "addSystemInstruction",
+  EDIT_SYSTEM_INSTRUCTION = "editSystemInstruction",
 }
 
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
@@ -27,4 +29,3 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
   );
 };
-
