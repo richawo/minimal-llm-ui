@@ -3,6 +3,7 @@
 import { ChatOllama } from "langchain/chat_models/ollama";
 import { baseUrl } from "@/utils/constants";
 import { useEffect, useRef, useState } from "react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
 
 type Props = {
   documentName: string;
@@ -23,7 +24,7 @@ export default function AppNavbar({
 }: Props) {
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-
+  const [selectedModel, setSelectedModel] = useState(activeModel);
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setDocumentName(value); // Call the callback function to update the parent component
@@ -55,20 +56,16 @@ export default function AppNavbar({
     };
   }, [isShareMenuOpen, isProfileMenuOpen]);
 
-  function toggleModel() {
-    const i =
-      (availableModels.findIndex((x) => x.name == activeModel) + 1) %
-      availableModels.length;
-    console.log(i, activeModel, availableModels);
-    setActiveModel(availableModels[i].name);
+  useEffect(() => {
+    setActiveModel(selectedModel);
     const newOllama = new ChatOllama({
       baseUrl: baseUrl,
-      model: availableModels[i]?.name,
+      model: selectedModel,
     });
     //store in local storage
-    localStorage.setItem("initialLocalLM", availableModels[i]?.name);
+    localStorage.setItem("initialLocalLM", selectedModel);
     setOllama(newOllama);
-  }
+  },[selectedModel])
 
   const shareMenuRef = useRef<HTMLDivElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -85,13 +82,30 @@ export default function AppNavbar({
               onChange={handleInputChange}
             ></input>
           </div>
-          <button
-            className="cursor-pointer text-xs text-white transition-colors hover:bg-white/10 rounded-md px-2 py-1"
-            contentEditable={false}
-            onClick={toggleModel}
-          >
-            {activeModel}
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger >
+              <p
+                className="cursor-pointer text-xs text-white transition-colors hover:bg-white/10 rounded-md px-2 py-1"
+                contentEditable={false}
+              // onClick={toggleModel}
+              >
+                {activeModel}
+              </p>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              sideOffset={5}
+              className="w-64"
+              ref={shareMenuRef}
+            >
+              <DropdownMenuRadioGroup value={activeModel} onValueChange={setSelectedModel}>
+              {/* <DropdownMenuRadioGroup> */}
+                {availableModels.map((item)=>(
+                  <DropdownMenuRadioItem key={item.name} value={item.name}>{item.name}</DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </nav>
     </>

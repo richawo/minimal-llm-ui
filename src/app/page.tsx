@@ -304,7 +304,7 @@ export default function Home() {
                       { "mr-auto": msg.type == "ai" },
                     )}
                   >
-                    <p className="mr-auto text-xs text-white/50">
+                    <p className="mr-auto text-xs /50">
                       {(msg?.model?.split(":")[0] || "user") +
                         " • " +
                         new Date(msg.timestamp).toLocaleDateString() +
@@ -314,7 +314,7 @@ export default function Home() {
                     <Markdown
                       remarkPlugins={[[remarkGfm, { singleTilde: false }]]}
                       className={
-                        "mr-auto flex w-full flex-col text-sm text-white"
+                        "mr-auto flex w-full flex-col text-sm"
                       }
                     >
                       {msg.content.trim()}
@@ -372,7 +372,7 @@ export default function Home() {
             filterString={newPrompt.substring(1)}
           />
           {/* TODO: Include Active Prompt Template when selected above so we know what's beind done or insert placeholder input as it's being populated */}
-          <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md text-sm font-normal text-white outline-0 focus:outline-0 focus:ring-white/10 md:flex">
+          <div className="mb-4 flex max-h-[200px] min-h-[56px] w-full flex-shrink-0 resize-none appearance-none overflow-hidden rounded-md text-sm font-normal outline-0 focus:outline-0 focus:ring-white/10 md:flex">
             {activePromptTemplate ? (
               <>
                 <CommandTextInput
